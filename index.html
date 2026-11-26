@@ -779,7 +779,7 @@ function extraSections(g){
 /* ---------- views ---------- */
 const sec=(id,title,inner,cls='')=>`<section class="band ${cls}" ${cls?'':'style="padding-top:0"'}><div class="in"><h2 class="sec" id="${id}">${title}</h2>${inner}</div></section>`;
 /* ---------- summary first, the rest folded ---------- */
-const FOLDS=[['need',''],['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
+const FOLDS=[['pv-match',''],['pv-xi',''],['pv-lu',''],['eo-bets',''],['watch',''],['need',''],['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
 const firstSentence=t=>{t=(t||'').replace(/\s+/g,' ').trim();const m=t.match(/^.{20,}?[.!?](\s|$)/);t=m?m[0].trim():t;return t.length>110?t.slice(0,108)+'…':t;};
 function foldify(TT='עוד מהמחזור',closed=false){
   const v=$('view'),made=[];
@@ -792,7 +792,7 @@ function foldify(TT='עוד מהמחזור',closed=false){
   if(!items.length)return;
   items.sort((x,y)=>x.sect.compareDocumentPosition(y.sect)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1);
   if(items.every(it=>it.id.startsWith('pre-'))){const fi=id=>FOLDS.findIndex(f=>f[0]===id);items.sort((x,y)=>fi(x.id)-fi(y.id));}
-  const SHORT={need:'מה צריך כדי לחזור','pre-xp':'תחזית מוקדמת','pre-chips':"צ'יפים",'pre-fx':'משחקי המחזור','pre-rate':'דירוג הסגלים','pre-st':'מה על הכף',gwaw:'פרסי המחזור',odds:'סיכויים',check:'הפתיחה מול התוצאה',bets:'ההימורים',h2h:'יריבויות',form:'כושר ורצפים',caps:'קפטנים',hof:'היכל התהילה וההשפלה',month:"החודש והצ'יפים",regret:'מדד ההחלטות',acc:'דיוק הצפי',hall:'כתרים ותחתיות','awards-h':'פרסי העונה'};
+  const SHORT={'pv-match':'משחקים מכריעים','pv-xi':'ההרכב של הליגה','pv-lu':'ההרכבים של כולם','eo-bets':'ההימורים','watch':'למה לצפות',need:'מה צריך כדי לחזור','pre-xp':'תחזית מוקדמת','pre-chips':"צ'יפים",'pre-fx':'משחקי המחזור','pre-rate':'דירוג הסגלים','pre-st':'מה על הכף',gwaw:'פרסי המחזור',odds:'סיכויים',check:'הפתיחה מול התוצאה',bets:'ההימורים',h2h:'יריבויות',form:'כושר ורצפים',caps:'קפטנים',hof:'היכל התהילה וההשפלה',month:"החודש והצ'יפים",regret:'מדד ההחלטות',acc:'דיוק הצפי',hall:'כתרים ותחתיות','awards-h':'פרסי העונה'};
   const tabsSec=document.createElement('section');tabsSec.className='band tabsec';tabsSec.style.paddingTop='0';
   tabsSec.innerHTML=`<div class="in"><h2 class="sec">${esc(TT)}</h2><div class="tabs" role="tablist" aria-label="${esc(TT)}">${items.map((it,k)=>`<button type="button" role="tab" id="t-${it.id}" aria-controls="p-${it.id}" aria-selected="false" tabindex="-1">${esc(SHORT[it.id]||it.title)}</button>`).join('')}</div><div class="tpanels"></div></div>`;
   const panels=tabsSec.querySelector('.tpanels');
@@ -853,7 +853,7 @@ function renderPreview(g){
   h+=P.eo?pvMoves(g):sec('moves','מה כל אחד עשה לפני הדדליין',`<div class="moves">${moves}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי דומים</h3><div class="moves">${pr('similar')}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי שונים</h3><div class="moves">${pr('different')}</div>`);
   if(P.eo){const S2=secSplit(h),ORD=['moves','pred','pv-match','pv-xi','pv-lu','eo-bets','watch'],idOf=x=>{const m=/<h2 class="sec" id="([^"]+)"/.exec(x);return m?m[1]:null;};const lead=S2.filter(x=>!idOf(x)),rest=S2.filter(x=>idOf(x));h=lead.join('')+ORD.map(id=>rest.filter(x=>idOf(x)===id).join('')).join('')+rest.filter(x=>!ORD.includes(idOf(x))).join('');}
   if(hasLive(g))h=h.replace('<section class="band lead">',renderLive(g).replace(/id="st"/,'id="st2"')+'<section class="band lead">');
-  $('view').innerHTML=h; drawRace=null;
+  $('view').innerHTML=h; drawRace=null;foldify('עוד מהמחזור',innerWidth<=700);
 }
 function renderEmpty(g,ph){
   let h;
@@ -1416,7 +1416,7 @@ function priceSection(){
   const grp={};H.forEach(h=>{(grp[h[0]]=grp[h[0]]||[]).push(h);});
   const hist=Object.entries(grp).map(([id,hs])=>({id:+id,d:hs.reduce((s,h)=>s+(h[2]-h[1]),0),now:hs[0][2]})).filter(x=>x.d!==0).sort((a,b)=>b.d-a.d);
   const hu=hist.filter(x=>x.d>0),hd=hist.filter(x=>x.d<0),hl=a=>a.map(x=>`<span class="pcpill"><bdi>${esc(nmT(x.id))}</bdi> <b>${(x.now/10).toFixed(1)}</b></span>`).join('');
-  const hH=hist.length?`<h3 class="kar" style="font-size:18px;margin:18px 0 4px">השבוע שהיה</h3><p class="pch">${hu.length?`<span class="up">▲ עלו:</span> ${hl(hu)}`:''}</p><p class="pch">${hd.length?`<span class="dn">▼ ירדו:</span> ${hl(hd)}`:''}</p><p class="note" style="margin-top:4px">שחקנים מהסגלים של הליגה, ב-7 הימים האחרונים. המספר: המחיר עכשיו.</p>`:'';
+  const hH=hist.length?`<details class="fold inner"><summary><span class="ft">השבוע שהיה: מי עלה ומי ירד</span><span class="chev" aria-hidden="true"></span></summary><p class="pch">${hu.length?`<span class="up">▲ עלו:</span> ${hl(hu)}`:''}</p><p class="pch">${hd.length?`<span class="dn">▼ ירדו:</span> ${hl(hd)}`:''}</p><p class="note" style="margin-top:4px">שחקנים מהסגלים של הליגה, ב-7 הימים האחרונים. המספר: המחיר עכשיו.</p></details>`:'';
   return sec('pre-price','מחירים: מי זז',`<p class="lede2">${esc(`מי מהשחקנים בסגלים של הליגה עומד לעלות או לרדת במחיר, לפי המחשבון הרשמי של FPL. המחירים משתנים כל לילה ב-02:00. רוצים למכור שחקן שיורד? לפני הלילה. רוצים לקנות שחקן שעולה? עכשיו.`)}</p>${mv}${hH}<p class="note">מקור: FPL, עודכן ${esc(atH)}. האחוז: כמה השחקן קרוב לשינוי (100% = שינוי).</p>`);
 }
 function preModel(g){const ms=MG(),pl={};
@@ -1443,7 +1443,7 @@ function renderPre(g){const M=preModel(g),ms=MG(),dl=D.next.deadline,c0=M.caps[0
   const hc={};M.habit.forEach(x=>hc[x.fav[0]]=(hc[x.fav[0]]||0)+1);const hf=Object.entries(hc).sort((a,b)=>b[1]-a[1])[0],hp=M.P.find(p=>p.name===hf[0]);
   const habLine=hp?`${hf[1]===ms.length?'כולם שמים':`${hf[1]} מתוך ${ms.length} שמים`} בדרך כלל את הסרט על ${nmb(hp.name)}. השבוע הוא ${hp.opp.map(o=>`${o.h==='H'?'בבית':'בחוץ'} מול ${o.t}`).join(' ו')} עם ${hp.xp.toFixed(1)} נקודות צפויות${M.caps[0].id!==hp.id?`, מול ${M.caps[0].xp.toFixed(1)} של ${nmb(M.caps[0].name)}. אולי השבוע שווה לשבור את ההרגל`:', והוא גם האופציה הכי טובה'}.`:'';
   h+=sec('pre-cap','הקפטן של המחזור',`<p class="lede2">${esc('הקשרים והחלוצים הכי חזקים מבין השחקנים שנמצאים בסגלים של הליגה, לפי ממוצע העונה, קושי המשחק והסיכוי לשחק.')}</p><div class="pcs">${M.caps.map((p,i)=>`<div class="pcc${i?'':' top'}">${shirt(p.team,p.pos===1)}<b>${nmb(p.name)}</b><span class="dfo">${p.opp.map(o=>`<i class="f${o.f||3}" dir="ltr">${esc(o.t)} <small>(${o.h==='H'?'H':'A'})</small></i>`).join('')||'<i class="f0">אין משחק</i>'}</span><strong>${p.xp.toFixed(1)}</strong><small>נק' צפויות · אצל ${p.own.length}</small></div>`).join('')}</div>
-   <h3 class="kar" style="font-size:19px;margin:18px 0 6px">על מי כל אחד שם בדרך כלל</h3><p class="lede2">${habLine}</p><div class="wk">${M.habit.map(x=>`<span>${esc(x.m.he)}: ${nmb(x.fav[0])} <b>${x.fav[1]}/${md(x.m.id).d.length}</b></span>`).join('')}</div></div>`);
+   <details class="fold inner"><summary><span class="ft">על מי כל אחד שם בדרך כלל</span><span class="chev" aria-hidden="true"></span></summary><p class="lede2">${habLine}</p><div class="wk">${M.habit.map(x=>`<span>${esc(x.m.he)}: ${nmb(x.fav[0])} <b>${x.fav[1]}/${md(x.m.id).d.length}</b></span>`).join('')}</div></details></div>`);
   /* matches */
   h+=sec('pre-fx',`משחקי מחזור ${g}`,`<p class="lede2">${esc('לפי סדר המשחקים. המספר: כמה שחקנים מההרכבים של הליגה (מהמחזור הקודם) משחקים במשחק הזה.')}</p><div class="pfx">${M.matches.map(x=>`<div class="pfr"><span class="pko"><b>${esc(new Date(x.ko).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}))}</b>${esc(new Date(x.ko).toLocaleDateString('he-IL',{weekday:'short'}))}</span><div class="pt">${shirt(x.h)}<b>${esc(x.h)}</b><i class="f${x.fh||3}">${x.fh||''}</i></div><span class="vs">נגד</span><div class="pt">${shirt(x.a)}<b>${esc(x.a)}</b><i class="f${x.fa||3}">${x.fa||''}</i></div><span class="pn2" title="שחקנים מההרכבים של הליגה"><b>${x.n}</b><small>בהרכבים</small></span>${x.ps.length?`<small class="pps">${x.ps.filter(p=>p.xi.length).slice(0,4).map(p=>`${nmb(p.name)} ${p.xi.length}/${ms.length}`).join(' · ')}</small>`:''}</div>`).join('')}</div><p class="note">המספר הקטן ליד כל קבוצה: דירוג הקושי של FPL ליריבה שלה, 1 קל ו-5 סיוט.</p>`);
   /* transfers */
