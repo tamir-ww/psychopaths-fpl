@@ -536,6 +536,11 @@ details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;fo
 
 /* wide screens: the tab bar becomes a rail beside the content, so it never covers it */
 @media(min-width:1280px){.tabbar{left:auto;right:max(10px,calc((100vw - 1080px)/2 - 92px));top:50%;bottom:auto;transform:translateY(-50%);width:78px;grid-template-columns:1fr!important;gap:4px;padding:10px 6px}.tabbar a{padding:9px 0}body{padding-bottom:24px}}
+.shr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:14px}
+.walink{display:inline-flex;align-items:center;gap:7px;font:800 15px Heebo,sans-serif;background:#1faa59;color:#fff;border:0;border-radius:99px;padding:8px 16px 8px 18px;cursor:pointer;box-shadow:0 2px 8px rgba(31,170,89,.25)}
+.walink svg{width:18px;height:18px}.walink:active{transform:translateY(1px)}
+.lnk{font:700 14px Heebo,sans-serif;color:var(--soft);background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.jabd>summary{list-style:none}.jabd>summary::-webkit-details-marker{display:none}.jabd[open]{flex-basis:100%}.jabd .pctl{margin-top:6px}
 </style>
 </head>
 <body class="shot">
@@ -587,7 +592,7 @@ let pref=null;try{const t=localStorage.getItem('pp-theme');if(t==='light'||t==='
 const sysDark=()=>matchMedia('(prefers-color-scheme: dark)').matches;
 const effTheme=()=>pref||(rt.dataset.theme==='dark'||rt.dataset.theme==='light'?rt.dataset.theme:(sysDark()?'dark':'light'));
 const SHOT=true;
-function jumpify(){meMark();helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
+function jumpify(){meMark();setTimeout(imgPrep,0);helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
   const secs=[...v.querySelectorAll(':scope>section.band')].filter(x=>!x.classList.contains('lead'));
   const items=secs.map(x=>{const h=x.querySelector('h2.sec');if(!h)return null;let t=h.textContent.trim().split(/[:,]/)[0].replace(/^ה(טבלה|מרוץ)/,'$&');if(t.length>22)t=t.slice(0,21)+'…';return {x,t};}).filter(Boolean);
   if(items.length<4)return;const lead=v.querySelector(':scope>section.band.lead');if(!lead)return;
@@ -767,7 +772,7 @@ function renderFinal(g){
   const above=Array.from({length:g},(_,k)=>sum(ms.map(m=>md(m.id).pts[k]))/ms.length>D.glob.avg[k]).filter(Boolean).length;
   const rows=o.map((m,r)=>{const p=md(m.id).pts[i],mv=g>1?posAt(g-1,m.id)-(r+1):0;return `<tr><td class="pos">${tieLab(o,z=>md(z.id).tot[i],r)}${mv?`<span class="mv ${mv>0?'up':'dn'}">${mv>0?'▲':'▼'}${Math.abs(mv)}</span>`:''}</td><td><a class="team" href="#coach-${m.slug}"><span class="nkn">${esc(m.he)}</span>${m.team?`<span class="tmn">${esc(m.team)}</span>`:''}</a></td><td class="n"><span class="gw ${p==hi?'hi':p==lo?'lo':''}">${p}</span></td><td class="n tot">${md(m.id).tot[i]}</td><td class="n">${r?sg(-(lead-md(m.id).tot[i])):'–'}</td><td class="n" style="color:var(--soft)">${kr(md(m.id).orank[i])}</td></tr>`;}).join('');
   let h=`<section class="band lead"><div class="in"><h1>${esc(T('headline'))}</h1><p class="dek">${esc(T('dek'))}</p>
-   <div class="tools"><button class="btn" type="button" data-act="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>הורד תמונה לוואטסאפ</button><button class="btn ghost" type="button" data-act="story">תמונה לסטורי</button><button class="btn ghost" type="button" data-act="wa">העתק כיתוב</button>${(()=>{const p=phaseOf(g);return p&&g===p[2]&&p[2]>p[1]?`<button class="btn ghost" type="button" data-act="month">תמונת ${esc(p[0])}</button>`:'';})()}</div>${posterCtl(g)}${g===D.current&&D.next&&hasPre(D.next.gw)?`<div class="tools" style="margin-top:-4px"><a class="btn ghost" href="#gw${D.next.gw}-pre">מחזור ${D.next.gw}: לפני הדדליין ←</a></div>`:''}<p class="status" id="st" role="status"></p>
+   ${shareRow(`${(()=>{const p=phaseOf(g);return p&&g===p[2]&&p[2]>p[1]?`<button class="lnk" type="button" data-act="month">תמונת ${esc(p[0])}</button>`:'';})()}<details class="jabd"><summary class="lnk">איזו עקיצה בתמונה?</summary>${posterCtl(g)}</details>${g===D.current&&D.next&&hasPre(D.next.gw)?`<a class="lnk" href="#gw${D.next.gw}-pre">מחזור ${D.next.gw}: לפני הדדליין ←</a>`:''}`)}<p class="status" id="st" role="status"></p>
    <div class="front one"><div><h2 class="sec">הטבלה אחרי מחזור ${g}</h2><table><thead><tr><th>#</th><th>מאמן</th><th class="n">מחזור</th><th class="n">סה״כ</th><th class="n">פער</th><th class="n">עולמי</th></tr></thead><tbody>${rows}</tbody></table><p class="note">ירוק: מלך המחזור. מג'נטה: תחתית המחזור. החצים: תזוזה מהמחזור הקודם.</p></div>
 </div></div></section>
    <section class="band" style="border-top:6px solid var(--rule)"><div class="in"><div class="kings">
@@ -792,7 +797,7 @@ function renderPreview(g){
   const pr=k=>P.pairs[k].map(p=>`<div class="mvc"><b>${esc(he(p[0]))} ו${esc(he(p[1]))}</b>${p[2]} מתוך 11 פותחים משותפים</div>`).join('');
   const o=base>0?orderAt(base):null;
   let h=`<section class="band lead"><div class="in"><h1>${esc(P.headline)}</h1><p class="dek">${esc(P.dek)}</p>
-   <div class="tools"><button class="btn" type="button" data-act="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>הורד תמונה לוואטסאפ</button><button class="btn ghost" type="button" data-act="story">תמונה לסטורי</button><button class="btn ghost" type="button" data-act="wa">העתק כיתוב</button></div><p class="status" id="st" role="status"></p>
+   ${shareRow('')}<p class="status" id="st" role="status"></p>
    <div class="front"><div><h2 class="sec">מי על הסרט</h2>${P.eo?`<div class="capb2">${pvCaps(g)}</div>`:`<div class="capb">${capRows}</div>`}</div>
    <div><h2 class="sec">${base>0?`הטבלה לפני מחזור ${g}`:'לפני הפתיחה'}</h2>${o?`<table><thead><tr><th>#</th><th>מאמן</th><th class="n">סה״כ</th><th class="n">פער</th></tr></thead><tbody>${o.map((m,r)=>`<tr><td class="pos">${r+1}</td><td class="team">${esc(m.he)}</td><td class="n tot">${md(m.id).tot[base-1]}</td><td class="n">${r?sg(-(md(o[0].id).tot[base-1]-md(m.id).tot[base-1])):'–'}</td></tr>`).join('')}</tbody></table>`:''}</div></div></div></section>`;
   h+=P.eo?pvSections(g):eoSection(g);
@@ -1365,7 +1370,7 @@ function renderPre(g){const M=preModel(g),ms=MG(),dl=D.next.deadline,c0=M.caps[0
   const dek=`${preLeft()}. ${ni?`${ni} ${ni>1?'שחקנים בסגלים של הליגה בסימן שאלה':'שחקן בסגלים של הליגה בסימן שאלה'}${M.inj[0]?`, הבולט: ${M.inj[0].name} (${flagOf(M.inj[0]).pct}% לשחק, אצל ${M.inj[0].own.length})`:''}.`:'אין פצועים בסגלים של הליגה.'} הקפטן הכי חזק לפי התחזית: ${c0.name}. עם הסגלים של היום, ל${x0.m.he} התחזית הכי גבוהה ול${xl.m.he} הכי נמוכה.`;
   let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">לפני הדדליין · מחזור ${g}</p><h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
    ${miniTable()}<div class="cdn"><b id="cdn">${esc(preLeft())}</b><span>${esc(new Date(dl).toLocaleString('he-IL',{weekday:'long',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}))}</span></div>
-   <div class="tools"><button class="btn" type="button" data-act="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>הורד תמונה לוואטסאפ</button><button class="btn ghost" type="button" data-act="story">תמונה לסטורי</button><button class="btn ghost" type="button" data-act="wa">העתק כיתוב</button></div><p class="status" id="st" role="status"></p></div></section>`;
+   ${shareRow('')}<p class="status" id="st" role="status"></p></div></section>`;
   /* injuries */
   h+=sec('pre-inj','חדר הטיפולים של הליגה',(M.inj.length?`<p class="lede2">${esc('שחקנים בסגלים של הליגה עם דגל פציעה, השעיה או ספק. כדאי לבדוק לפני הדדליין.')}</p><div class="dfs">${M.inj.map(p=>{const f=flagOf(p);return `<div class="dfc inj ${f.lvl}">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><span class="dfw">${esc(p.team)} · אצל ${esc(andJ(p.own.map(m=>m.he+(p.xi.includes(m)?'':' (ספסל)'))))}</span>${p.news?`<span class="dfw">${esc(newsHe(p.news))}</span>`:''}</div><div class="dfn ${f.lvl}">${f.pct}%<small>לשחק</small></div></div>`;}).join('')}</div>`:`<p class="lede2">אין אף שחקן עם דגל בסגלים של הליגה. נדיר.</p>`)+(M.rot.length?`<h3 class="kar" style="font-size:19px;margin:18px 0 6px">סיכון לדקות</h3><p class="note" style="margin-top:0">${esc('בלי דגל פציעה, אבל לא פותחים קבוע לאחרונה. לפי הדקות והפתיחות במשחקים האחרונים, מנתוני FPL.')}</p><div class="rotl">${M.rot.map(p=>{const r=minRisk(p.id);return `<div class="rotr">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><small>${esc(`${p.team} · בהרכב של ${andJ(p.xi.map(m=>m.he))}`)}</small></div><span class="rotb m${r.lvl}">${esc(r.t)}<small>פתח ${Math.round(r.pS*100)}%</small></span></div>`;}).join('')}</div>`:''));
   /* captain */
@@ -2348,6 +2353,14 @@ document.addEventListener('change',e=>{if(e.target.id!=='jabpick')return;try{loc
 const overlay=html=>{$('ovbox').innerHTML=html+'<button class="btn" type="button" id="ovx">סגירה</button>';$('ov').classList.add('on');$('ovx').onclick=()=>$('ov').classList.remove('on');};
 $('ov').addEventListener('click',e=>{if(e.target.id==='ov')$('ov').classList.remove('on');});
 addEventListener('keydown',e=>{if(e.key==='Escape')$('ov').classList.remove('on');});
+/* the one share action on a gameweek page: a compact pill. The image is prepared in the background, so a tap opens the share sheet right away */
+const shareRow=extra=>`<div class="shr"><button type="button" class="walink" data-act="wa1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 3v12M7.5 7.5 12 3l4.5 4.5"/></svg><span>תמונה לווטסאפ</span></button>${extra}</div>`;
+let IMGP=null;
+const imgKey=()=>location.hash+'|'+S.gw+'|'+S.ph+'|'+(($('jabpick')||{}).value||'');
+const imgName=(fm,MODE)=>MODE==='hall'?`psychopaths-hall-gw${D.current}.png`:MODE==='card'?`psychopaths-card-${(MG().find(z=>z.id===S.coachId)||{}).slug}${fm==='story'?'-story':''}.png`:MODE==='month'?`psychopaths-month-gw${S.gw}.png`:`psychopaths-gw${S.gw}-${MODE==='live'?'live':S.ph==='final'?'final':S.ph==='pre'?'deadline':'opening'}${fm==='story'?'-story':''}.png`;
+function imgPrep(){if(!document.querySelector('[data-act=wa1]'))return;const k=imgKey();if(IMGP&&IMGP.k===k)return;const rec={k,blob:null};IMGP=rec;
+  setTimeout(async()=>{if(IMGP!==rec)return;try{if(document.fonts)await document.fonts.ready;const b=await poster('feed','');if(IMGP===rec)rec.blob=b;}catch(e){}},600);}
+document.addEventListener('change',e=>{if(e.target.id==='jabpick'){IMGP=null;setTimeout(imgPrep,50);}});
 const LOGO=new Image();LOGO.src='assets/logo.jpg';
 const fkLogo=(x,cx,cy,r)=>{if(!LOGO.complete||!LOGO.naturalWidth)return;x.save();x.beginPath();x.arc(cx,cy,r+5,0,Math.PI*2);x.fillStyle='#b14dff';x.fill();x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.closePath();x.clip();x.drawImage(LOGO,cx-r,cy-r,r*2,r*2);x.restore();};
 const siteUrl=()=>/^https?:$/.test(location.protocol)&&!/claude|localhost|127\.0\.0\.1/.test(location.hostname)?location.origin+location.pathname:'https://tamir-ww.github.io/psychopaths-fpl/';
@@ -2389,10 +2402,18 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-me]');if(b
   if(e.target.closest('#melinks a')){$('menupop').hidden=true;$('menub').setAttribute('aria-expanded','false');}});
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const st=$('st');
   if(b.dataset.act==='wa'){const txt=captionText();try{await navigator.clipboard.writeText(txt);st.textContent='הכיתוב הועתק. מדביקים מתחת לתמונה בקבוצה.';}catch(err){overlay(`<p>ההעתקה האוטומטית נחסמה. סמנו והעתיקו:</p><textarea readonly>${esc(txt)}</textarea>`);}}
-  const ACT=b.dataset.act,MODE={month:'month',hall:'hall',card:'card',cardstory:'card',liveimg:'live'}[ACT]||'';if(['img','story','month','hall','card','cardstory','liveimg'].includes(ACT)){const mo=MODE==='month',fm=(ACT==='story'||ACT==='cardstory')?'story':'feed';if(!st){overlay('<p>מכין…</p>');}else st.textContent='מכין את התמונה…';const blob=await poster(fm,MODE);if(!blob){st.textContent='לא הצלחתי להכין תמונה.';return;}
+  let ACT=b.dataset.act;
+  if(ACT==='wa1'){const rec=IMGP&&IMGP.k===imgKey()&&IMGP.blob?IMGP:null;
+    if(rec){const fn=imgName('feed',''),file=typeof File!=='undefined'?new File([rec.blob],fn,{type:'image/png'}):null,cap=captionText();
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})){try{navigator.clipboard&&navigator.clipboard.writeText(cap).catch(()=>{});}catch(e){}
+        try{await navigator.share({files:[file],text:cap});if(st)st.textContent='';}catch(err){if(err&&err.name!=='AbortError'&&st)st.textContent='השיתוף לא נפתח. נסו שוב.';}return;}
+      const a=document.createElement('a');a.href=URL.createObjectURL(rec.blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();
+      try{await navigator.clipboard.writeText(cap);if(st)st.textContent='התמונה ירדה והכיתוב הועתק. מדביקים בקבוצה.';}catch(e){if(st)st.textContent='התמונה ירדה.';}return;}
+    ACT='img';}
+  const MODE={month:'month',hall:'hall',card:'card',cardstory:'card',liveimg:'live'}[ACT]||'';if(['img','story','month','hall','card','cardstory','liveimg'].includes(ACT)){const mo=MODE==='month',fm=(ACT==='story'||ACT==='cardstory')?'story':'feed';if(!st){overlay('<p>מכין…</p>');}else st.textContent='מכין את התמונה…';const blob=await poster(fm,MODE);if(!blob){st.textContent='לא הצלחתי להכין תמונה.';return;}
     const fn=MODE==='hall'?`psychopaths-hall-gw${D.current}.png`:MODE==='card'?`psychopaths-card-${(MG().find(z=>z.id===S.coachId)||{}).slug}${fm==='story'?'-story':''}.png`:mo?`psychopaths-month-gw${S.gw}.png`:`psychopaths-gw${S.gw}-${MODE==='live'?'live':S.ph==='final'?'final':S.ph==='pre'?'deadline':'opening'}${fm==='story'?'-story':''}.png`,u=URL.createObjectURL(blob);st.textContent='';
     const file=typeof File!=='undefined'?new File([blob],fn,{type:'image/png'}):null,canSh=!!(file&&navigator.canShare&&navigator.canShare({files:[file]}));
-    overlay(`<img src="${u}" alt="תמונת הסיכום של מחזור ${S.gw}">${canSh?'<button class="btn" type="button" id="ovshare">שתף לווטסאפ</button>':''}<a class="btn ${canSh?'ghost':''}" id="ovsave" href="${u}" download="${fn}">שמור את התמונה</a><p class="note" id="ovmsg">${isTouch?'אפשר גם לחיצה ארוכה על התמונה ושמירה.':''}</p>`);
+    overlay(`<img src="${u}" alt="תמונת הסיכום של מחזור ${S.gw}">${canSh?'<button class="btn" type="button" id="ovshare">שתף לווטסאפ</button>':''}<a class="btn ${canSh?'ghost':''}" id="ovsave" href="${u}" download="${fn}">שמור את התמונה</a>${!MODE&&fm==='feed'?'<button class="btn ghost" type="button" data-act="story">גרסה לסטורי</button>':''}<p class="note" id="ovmsg">${isTouch?'אפשר גם לחיצה ארוכה על התמונה ושמירה.':''}</p>`);
     const sh=$('ovshare');if(sh)sh.onclick=async()=>{try{await navigator.share({files:[file],text:captionText()});$('ovmsg').textContent='נשלח.';}catch(err){if(err&&err.name!=='AbortError')$('ovmsg').textContent='השיתוף לא עבד כאן. לחיצה ארוכה על התמונה ושמירה.';}};
     const sv=$('ovsave');if(sv)sv.onclick=()=>{setTimeout(()=>{$('ovmsg').textContent='נשמר בהורדות. אפשר לשלוח בקבוצה.';},400);};}
 });
