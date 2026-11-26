@@ -584,6 +584,11 @@ html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg butto
 .txf2{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px}.txf2 select{font:600 13px Heebo,sans-serif;border:1px solid var(--hair);border-radius:99px;padding:5px 10px;background:var(--bg);color:var(--ink)}
 .txe{font:700 13px Heebo,sans-serif;border:1px solid var(--hair);border-radius:99px;padding:5px 12px;background:var(--bg);color:var(--ink);cursor:pointer}.txe[aria-pressed=true]{background:#1faa59;border-color:#1faa59;color:#fff}
 .tabsec.closed .tabs{margin-bottom:0}
+@media(max-width:700px){.lead h1{font-size:24px;line-height:1.2;max-width:none}.lead .dek{font-size:16px;line-height:1.5}}
+.capl{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0 0}.capk{font:800 12px Heebo,sans-serif;color:var(--soft);margin-inline-end:2px}
+.capc{display:inline-flex;align-items:baseline;gap:5px;padding:4px 10px;border-radius:99px;background:linear-gradient(115deg,#37003c,#5d0f63);color:#fff;font-size:13.5px}.capc em{font-style:normal;color:#00ff85;font-weight:900}.capc.solo{background:light-dark(#fde7ef,#3a0b2a);color:var(--ink)}
+.dead{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.dch{display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 8px;border-radius:12px;background:var(--card);opacity:.75}.dch .shirt{width:22px;height:22px}.dch b{font-size:14px}.dch small{font-size:11.5px;color:var(--soft)}
+@media(max-width:700px){.mtc{padding:10px 12px}.mtt{margin:4px 0 0;gap:8px}.mtt>div{flex-direction:row;gap:6px}.mtt .shirt{width:34px;height:32px}.mtt b{font-size:17px}.mtt small{display:none}.mtw{margin:2px 0 6px;font-size:12px}.mtx{font-size:13px}}
 </style>
 </head>
 <body class="shot">
@@ -779,7 +784,7 @@ function extraSections(g){
 /* ---------- views ---------- */
 const sec=(id,title,inner,cls='')=>`<section class="band ${cls}" ${cls?'':'style="padding-top:0"'}><div class="in"><h2 class="sec" id="${id}">${title}</h2>${inner}</div></section>`;
 /* ---------- summary first, the rest folded ---------- */
-const FOLDS=[['pv-match',''],['pv-xi',''],['pv-lu',''],['eo-bets',''],['watch',''],['need',''],['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
+const FOLDS=[['pv-caps',''],['pv-table',''],['moves',''],['pred',''],['pv-lu',''],['watch',''],['need',''],['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
 const firstSentence=t=>{t=(t||'').replace(/\s+/g,' ').trim();const m=t.match(/^.{20,}?[.!?](\s|$)/);t=m?m[0].trim():t;return t.length>110?t.slice(0,108)+'…':t;};
 function foldify(TT='עוד מהמחזור',closed=false){
   const v=$('view'),made=[];
@@ -792,7 +797,7 @@ function foldify(TT='עוד מהמחזור',closed=false){
   if(!items.length)return;
   items.sort((x,y)=>x.sect.compareDocumentPosition(y.sect)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1);
   if(items.every(it=>it.id.startsWith('pre-'))){const fi=id=>FOLDS.findIndex(f=>f[0]===id);items.sort((x,y)=>fi(x.id)-fi(y.id));}
-  const SHORT={'pv-match':'משחקים מכריעים','pv-xi':'ההרכב של הליגה','pv-lu':'ההרכבים של כולם','eo-bets':'ההימורים','watch':'למה לצפות',need:'מה צריך כדי לחזור','pre-xp':'תחזית מוקדמת','pre-chips':"צ'יפים",'pre-fx':'משחקי המחזור','pre-rate':'דירוג הסגלים','pre-st':'מה על הכף',gwaw:'פרסי המחזור',odds:'סיכויים',check:'הפתיחה מול התוצאה',bets:'ההימורים',h2h:'יריבויות',form:'כושר ורצפים',caps:'קפטנים',hof:'היכל התהילה וההשפלה',month:"החודש והצ'יפים",regret:'מדד ההחלטות',acc:'דיוק הצפי',hall:'כתרים ותחתיות','awards-h':'פרסי העונה'};
+  const SHORT={'pv-caps':'הקפטנים','pv-table':'הטבלה','moves':'מה כל אחד עשה','pred':'התחזית','pv-lu':'ההרכבים של כולם','watch':'למה לצפות',need:'מה צריך כדי לחזור','pre-xp':'תחזית מוקדמת','pre-chips':"צ'יפים",'pre-fx':'משחקי המחזור','pre-rate':'דירוג הסגלים','pre-st':'מה על הכף',gwaw:'פרסי המחזור',odds:'סיכויים',check:'הפתיחה מול התוצאה',bets:'ההימורים',h2h:'יריבויות',form:'כושר ורצפים',caps:'קפטנים',hof:'היכל התהילה וההשפלה',month:"החודש והצ'יפים",regret:'מדד ההחלטות',acc:'דיוק הצפי',hall:'כתרים ותחתיות','awards-h':'פרסי העונה'};
   const tabsSec=document.createElement('section');tabsSec.className='band tabsec';tabsSec.style.paddingTop='0';
   tabsSec.innerHTML=`<div class="in"><h2 class="sec">${esc(TT)}</h2><div class="tabs" role="tablist" aria-label="${esc(TT)}">${items.map((it,k)=>`<button type="button" role="tab" id="t-${it.id}" aria-controls="p-${it.id}" aria-selected="false" tabindex="-1">${esc(SHORT[it.id]||it.title)}</button>`).join('')}</div><div class="tpanels"></div></div>`;
   const panels=tabsSec.querySelector('.tpanels');
@@ -841,17 +846,18 @@ function renderPreview(g){
   const diffs=`<table><thead><tr><th>שחקן</th><th>אצל</th><th>משחק</th><th class="n">קושי</th><th class="n">בעולם</th></tr></thead><tbody>${P.diffs.map(d=>`<tr><td><strong>${nmb(d[0])}</strong><div class="mgr">${esc(d[2])}</div></td><td>${esc(he(d[1]))}</td><td><bdi dir="ltr">${esc(d[3])} (${d[4]==='H'?'H':'A'})</bdi></td><td class="n">${fdr(d[5])}</td><td class="n">${d[6]}%</td></tr>`).join('')}</tbody></table>`;
   const pr=k=>P.pairs[k].map(p=>`<div class="mvc"><b>${esc(he(p[0]))} ו${esc(he(p[1]))}</b>${p[2]} מתוך 11 פותחים משותפים</div>`).join('');
   const o=base>0?orderAt(base):null;
+  const capLine=`<div class="capl"><span class="capk">הסרט</span>${Object.entries(P.captains).sort((a,b)=>b[1].length-a[1].length).map(([c,ids])=>`<span class="capc${ids.length===1?' solo':''}"><b>${nmb(c)}</b> ${ids.length===1?esc(he(ids[0])):`<em>×${ids.length}</em>`}</span>`).join('')}</div>`;
   let h=`<section class="band lead"><div class="in"><h1>${esc(P.headline)}</h1><p class="dek">${esc(P.dek)}</p>
-   ${shareRow('')}<p class="status" id="st" role="status"></p>
-   <div class="front"><div><h2 class="sec">מי על הסרט</h2>${P.eo?`<div class="capb2">${pvCaps(g)}</div>`:`<div class="capb">${capRows}</div>`}</div>
-   <div><h2 class="sec">${base>0?`הטבלה לפני מחזור ${g}`:'לפני הפתיחה'}</h2>${o?`<table><thead><tr><th>#</th><th>מאמן</th><th class="n">סה״כ</th><th class="n">פער</th></tr></thead><tbody>${o.map((m,r)=>`<tr><td class="pos">${r+1}</td><td class="team">${esc(m.he)}</td><td class="n tot">${md(m.id).tot[base-1]}</td><td class="n">${r?sg(-(md(o[0].id).tot[base-1]-md(m.id).tot[base-1])):'–'}</td></tr>`).join('')}</tbody></table>`:''}</div></div></div></section>`;
+   ${capLine}${shareRow('')}<p class="status" id="st" role="status"></p></div></section>`;
+  h+=sec('pv-caps','מי על הסרט',P.eo?`<div class="capb2">${pvCaps(g)}</div>`:`<div class="capb">${capRows}</div>`);
+  if(o)h+=sec('pv-table',`הטבלה לפני מחזור ${g}`,`<table><thead><tr><th>#</th><th>מאמן</th><th class="n">סה״כ</th><th class="n">פער</th></tr></thead><tbody>${o.map((m,r)=>`<tr><td class="pos">${r+1}</td><td class="team"><a class="team" href="#coach-${m.slug}">${esc(m.he)}</a></td><td class="n tot">${md(m.id).tot[base-1]}</td><td class="n">${r?sg(-(md(o[0].id).tot[base-1]-md(m.id).tot[base-1])):'–'}</td></tr>`).join('')}</tbody></table>`);
   h+=P.eo?pvSections(g):eoSection(g);
   if(P.eo&&D.planner)h+=pvPredSection(g);
   else if(P.prediction){const pr=P.prediction;h+=sec('pred','התחזית',`<div class="kings"><div class="k king"><div class="lbl">מלך המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.king))}</span></div></div><div class="k flop"><div class="lbl">תחתית המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.flop))}</span></div></div></div>${pr.why?`<p class="lede2" style="margin-top:12px">${esc(pr.why)}</p>`:''}<p class="note">בסיכום הסיום נבדוק אם צדקנו.</p>`);}
   h+=sec('watch','למה לצפות',`<div class="jabs">${P.watch.slice(0,3).map(j=>`<div class="jab"><h3>${esc(j[0])}</h3><p>${esc(j[1])}</p></div>`).join('')}</div>`);
   if(!P.eo)h+=sec('diffs','מה משותף לכולם ומה רק לאחד',`<div class="two"><div><h3 class="kar" style="font-size:20px;margin-bottom:10px">התבנית: פותחים אצל רוב הליגה</h3><div class="tpl">${tpl}</div></div><div><h3 class="kar" style="font-size:20px;margin-bottom:10px">הדיפרנשלים: פותחים אצל מאמן אחד בלבד</h3><div style="overflow-x:auto">${diffs}</div><p class="note">קושי המשחק לפי FPL: 2 קל, 5 קשה. "בעולם": אחוז המאמנים בעולם שמחזיקים בשחקן.</p></div></div>`);
   h+=P.eo?pvMoves(g):sec('moves','מה כל אחד עשה לפני הדדליין',`<div class="moves">${moves}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי דומים</h3><div class="moves">${pr('similar')}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי שונים</h3><div class="moves">${pr('different')}</div>`);
-  if(P.eo){const S2=secSplit(h),ORD=['moves','pred','pv-match','pv-xi','pv-lu','eo-bets','watch'],idOf=x=>{const m=/<h2 class="sec" id="([^"]+)"/.exec(x);return m?m[1]:null;};const lead=S2.filter(x=>!idOf(x)),rest=S2.filter(x=>idOf(x));h=lead.join('')+ORD.map(id=>rest.filter(x=>idOf(x)===id).join('')).join('')+rest.filter(x=>!ORD.includes(idOf(x))).join('');}
+  if(P.eo){const S2=secSplit(h),ORD=['pv-match','eo-bets','pv-dead','pv-xi','pv-caps','pv-table','moves','pred','pv-lu','watch'],idOf=x=>{const m=/<h2 class="sec" id="([^"]+)"/.exec(x);return m?m[1]:null;};const lead=S2.filter(x=>!idOf(x)),rest=S2.filter(x=>idOf(x));h=lead.join('')+ORD.map(id=>rest.filter(x=>idOf(x)===id).join('')).join('')+rest.filter(x=>!ORD.includes(idOf(x))).join('');}
   if(hasLive(g))h=h.replace('<section class="band lead">',renderLive(g).replace(/id="st"/,'id="st2"')+'<section class="band lead">');
   $('view').innerHTML=h; drawRace=null;foldify('עוד מהמחזור',innerWidth<=700);
 }
@@ -1333,8 +1339,11 @@ function pvMoves(g){const P=D.gw[g].preview,ms=MG();
   return sec('moves','מה כל אחד עשה לפני הדדליין',`<div class="mvxs">${cards}</div>${idle.length?`<p class="mvi"><b>בלי העברות:</b> ${esc(andJ(idle.map(m=>m.he)))}. ${idle.length>1?'שומרים':'שומר'} את ההעברה לשבוע הבא.</p>`:''}<p class="note">מימין: מי יצא. משמאל: מי נכנס.</p>`);}
 function pvBets(g){const E=eoModel(g);
   const chip=(z,c)=>`<span class="bch ${c}">${shirt(z.p.team,z.p.pos===1)}<b>${nmb(z.p.name)}</b><em>${xf(z.v)}</em></span>`;
-  return sec('eo-bets','על מה כל מאמן מהמר',`<p class="lede2">${esc('המספר: כמה נקודות המאמן מרוויח או מפסיד מול הממוצע של שאר הליגה, על כל נקודה שהשחקן עושה. ירוק: שחקנים שאצלו יותר מאצל האחרים. אדום: שחקנים שלאחרים יש והוא בלעדיהם.')}</p><div class="bts">${E.coach.map(c=>`<div class="btc"><a class="btn2 cl" href="#coach-${c.m.slug}">${esc(c.m.he)}</a><div class="btr"><span class="btl up">מרוויח מ</span>${c.up.length?c.up.map(z=>chip(z,'up')).join(''):'<span class="btz">אף אחד במיוחד</span>'}</div><div class="btr"><span class="btl dn">חשוף ל</span>${c.dn.length?c.dn.map(z=>chip(z,'dn')).join(''):'<span class="btz">אף אחד במיוחד</span>'}</div></div>`).join('')}</div>`);}
-function pvSections(g){return pvMatch(g)+pvTemplate(g)+pvLineups(g)+pvBets(g);}
+  return sec('eo-bets','הדיפרנשיאלס: על מה כל אחד מהמר',`<p class="lede2">${esc('המספר: כמה נקודות המאמן מרוויח או מפסיד מול הממוצע של שאר הליגה, על כל נקודה שהשחקן עושה. ירוק: שחקנים שאצלו יותר מאצל האחרים. אדום: שחקנים שלאחרים יש והוא בלעדיהם.')}</p><div class="bts">${E.coach.map(c=>`<div class="btc"><a class="btn2 cl" href="#coach-${c.m.slug}">${esc(c.m.he)}</a><div class="btr"><span class="btl up">מרוויח מ</span>${c.up.length?c.up.map(z=>chip(z,'up')).join(''):'<span class="btz">אף אחד במיוחד</span>'}</div><div class="btr"><span class="btl dn">חשוף ל</span>${c.dn.length?c.dn.map(z=>chip(z,'dn')).join(''):'<span class="btz">אף אחד במיוחד</span>'}</div></div>`).join('')}</div>`);}
+function pvSections(g){return pvMatch(g)+pvDead(g)+pvTemplate(g)+pvLineups(g)+pvBets(g);}
+/* players every coach starts and nobody captains: their points move nothing in the league */
+function pvDead(g){const E=eoModel(g);if(!E||!E.dead.length)return '';
+  return sec('pv-dead','לא מזיזים כלום בליגה',`<p class="lede2">${esc(`פותחים אצל כל ${E.N} המאמנים ואף אחד לא שם עליהם קפטן. גם אם יעשו הטריק, בטבלה של הליגה זה לא ישנה דבר.`)}</p><div class="dead">${E.dead.map(p=>`<span class="dch">${shirt(p.team,p.pos===1)}<b>${nmb(p.name)}</b><small dir="ltr">${esc(p.oppRaw.split('/').map(z=>{const [t,h]=z.split(':');return `${t} (${h})`;}).join(', '))}</small></span>`).join('')}</div>`);}
 
 /* ---------- expected points per coach ---------- */
 const KX=()=>0.82;
