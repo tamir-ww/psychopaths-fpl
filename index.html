@@ -1996,25 +1996,39 @@ function pvMatchList(g){const E=eoModel(g),ms=MG(),N=ms.length,K=(D.gw[g].kick||
 function posterOpeningFPL(g,ST){
   const Pv=D.gw[g].preview,ms=MG(),N=ms.length,{HB,P,P2,SOFT,PK,GD,LINE,CHIP,WH,CY,GR}=FK,E=eoModel(g);
   if(!E)return posterOpeningOld(g,ST);
-  const xi=pvXI(E),M=pvMatchList(g)[0],X=pvXp(g),F=pvFdr(g);
+  const xi=pvXI(E),ML=pvMatchList(g).slice(0,3),F=pvFdr(g);
   const TRm=ms.map(m=>({m,tr:(Pv.transfers||{})[m.id]||[],hit:(Pv.hits||{})[m.id]||0,chip:(Pv.chips||{})[m.id]||''}));const trN=TRm.filter(z=>z.tr.length||z.chip).length;
-  const SP=openFacts(g).filter(f=>!/קפטן|הסרט|סרט/.test((f.t||'')+(f.x||''))).slice(0,2);
+  const BT=E.coach.filter(c=>c.up.length||c.dn.length),DEAD=E.dead;
   const hh=170+fkLines(Pv.headline,`900 50px ${HB}`,968,2).length*58+40,gap=28;
-  const capH=E.caps.length*162-12,pitchH=xi.length>=11?96+4*168+20:0,mH=M?330:0,xH=X?96+X.length*58+16:0,tH=96+TRm.length*58+12;
-  const H=Math.max(ST?1920:0,hh+gap-60+capH+gap+(pitchH?pitchH+gap:0)+tH+gap+(mH?mH+gap:0)+(xH?xH+gap:0)+(SP.length?56+FKs(SP.length)+gap:0)+120);
+  /* same order as the page: captains in one band, the matches that decide, the differentials, who moves nothing, the league XI, then who did what */
+  const capH=118,mH=ML.length?96+ML.length*150:0,bH=BT.length?96+BT.length*64+10:0,dH=DEAD.length?150:0,pitchH=xi.length>=11?96+4*168+20:0,tH=96+TRm.length*58+12;
+  const H=Math.max(ST?1920:0,hh+gap-60+capH+gap+(mH?mH+gap:0)+(bH?bH+gap:0)+(dH?dH+gap:0)+(pitchH?pitchH+gap:0)+tH+gap+120);
   const k=fkCanvas(H),{t,fit,card,rr,grad,R0,L0,CW,x}=k;
-  k.header(`פתיחת מחזור ${g}`,Pv.headline);let y=hh+gap-60;
-  /* captain cards */
-  E.caps.forEach(p=>{const lone=p.cap.length===1,ch=150;x.save();x.shadowColor='rgba(55,0,60,.18)';x.shadowBlur=24;x.shadowOffsetY=6;rr(L0,y,CW,ch,24,lone?grad(L0,y,R0,y+ch,PK,'#a3004a'):grad(L0,y,R0,y+ch,P,'#5d0f63'));x.restore();
-    x.save();x.beginPath();x.roundRect(L0,y,CW,ch,24);x.clip();const rg=x.createRadialGradient(R0-60,y+20,10,R0-60,y+20,220);rg.addColorStop(0,'rgba(4,245,255,.35)');rg.addColorStop(1,'rgba(4,245,255,0)');x.fillStyle=rg;x.fillRect(L0,y,CW,ch);x.restore();
-    cvShirt(x,R0-80,y+ch/2,104,p.team,p.pos===1);x.beginPath();x.arc(R0-36,y+ch-34,18,0,7);x.fillStyle=GR;x.fill();x.lineWidth=3;x.strokeStyle=WH;x.stroke();t('C',R0-36,y+ch-27,`900 20px ${HB}`,P,'center','ltr');
-    const tx=R0-160;t(lone?'הימור של מאמן אחד':p.cap.length===N?'הסרט של כולם':`הסרט של ${p.cap.length} מאמנים`,tx,y+40,`800 19px ${HB}`,lone?WH:CY);
-    t(p.name,tx,y+86,`900 44px ${HB}`,WH,'right','ltr');
-    t(fit(`${p.team} · ${p.opp}${!lone&&p.cap.length<N?` · נגדו: ${andJ(ms.filter(m=>!p.cap.includes(m)).map(m=>m.he))}`:''}`,`600 19px ${HB}`,CW-380),tx,y+118,`600 19px ${HB}`,'#e7d6ec');
-    t(`${p.cap.length}/${N}`,L0+36,y+96,`900 64px ${HB}`,lone?WH:GR,'left','ltr');
-    const names=fit(p.cap.map(m=>m.he).join(' · '),`700 16px ${HB}`,340);t(names,L0+36,y+128,`700 16px ${HB}`,'#e7d6ec','left');
-    y+=ch+12;});
-  y+=gap-12;
+  k.header(`מחזור ${g} · תוך כדי`,Pv.headline);let y=hh+gap-60;
+  const pills=(items,yy,right,maxW,font)=>{let xx=right;items.forEach(([label,fill,col,dir])=>{const w=fkTw(label,font)+30;if(right-xx+w>maxW+1)return;rr(xx-w,yy,w,40,20,fill);t(label,xx-w/2,yy+28,font,col,'center',dir||'ltr');xx-=w+10;});};
+  /* captains: one band */
+  {x.save();x.shadowColor='rgba(55,0,60,.18)';x.shadowBlur=20;x.shadowOffsetY=5;rr(L0,y,CW,capH,24,grad(L0,y,R0,y+capH,P,'#5d0f63'));x.restore();
+    t('הסרט',R0-28,y+46,`800 20px ${HB}`,CY);
+    pills(E.caps.map(p=>[p.cap.length===1?`${p.name} · ${p.cap[0].he}`:`${p.name} ×${p.cap.length}`,p.cap.length===1?PK:'rgba(255,255,255,.14)',WH,p.cap.length===1?'rtl':'ltr']),y+62,R0-28,CW-56,`800 22px ${HB}`);
+    y+=capH+gap;}
+  /* the matches that decide */
+  if(ML.length){card(L0,y,CW,mH,'b');t('המשחקים שיכריעו את המחזור',R0-28,y+56,`900 32px ${HB}`,P);t('איפה ההרכבים הכי שונים',L0+28,y+56,`600 18px ${HB}`,SOFT,'left');
+    ML.forEach((M,j)=>{const yy=y+96+j*150;if(j){x.fillStyle=LINE;x.fillRect(L0+24,yy-10,CW-48,2);}
+      cvShirt(x,R0-64,yy+40,62,M.home);t(M.home,R0-110,yy+52,`900 30px ${HB}`,P,'right','ltr');const hw=fkTw(M.home,`900 30px ${HB}`);t('נגד',R0-124-hw,yy+50,`700 20px ${HB}`,SOFT,'right');const vw=fkTw('נגד',`700 20px ${HB}`);
+      t(M.away,R0-138-hw-vw,yy+52,`900 30px ${HB}`,P,'right','ltr');const aw=fkTw(M.away,`900 30px ${HB}`);cvShirt(x,R0-176-hw-vw-aw,yy+40,62,M.away);
+      if(M.when)t(M.when,L0+28,yy+50,`600 18px ${HB}`,SOFT,'left');if(!j){rr(L0+28,yy+62,0,0,0,P);}
+      t(fit(M.own.map(p=>`${p.name} ${p.st.length}/${N}`).join(' · '),`700 19px ${HB}`,CW-80),R0-28,yy+96,`700 19px ${HB}`,P,'right','ltr');
+      const ln=[M.up.v>0.4?`${M.up.m.he} הכי מרוויח (+${M.up.v.toFixed(1)} לכל נקודה)`:'',M.dn.v<-0.4?`${M.dn.m.he} הכי חשוף (−${Math.abs(M.dn.v).toFixed(1)})`:''].filter(Boolean).join(' · ');
+      if(ln)t(fit(ln,`600 18px ${HB}`,CW-56),R0-28,yy+128,`600 18px ${HB}`,SOFT,'right');});
+    y+=mH+gap;}
+  /* differentials */
+  if(bH){card(L0,y,CW,bH,'g');t('הדיפרנשיאלס: על מה כל אחד מהמר',R0-28,y+56,`900 32px ${HB}`,P);t('ירוק: מרוויח · אדום: חשוף',L0+28,y+56,`600 18px ${HB}`,SOFT,'left');
+    BT.forEach((c,j)=>{const yy=y+96+j*64;if(j){x.fillStyle=LINE;x.fillRect(L0+24,yy-8,CW-48,2);}t(c.m.he,R0-28,yy+32,`800 24px ${HB}`,P);
+      pills([...c.up.map(z=>[`${z.p.name} +${z.v.toFixed(1)}`,'#dff7e9','#0b7a3b']),...c.dn.map(z=>[`${z.p.name} −${Math.abs(z.v).toFixed(1)}`,'#fde3ec','#b0003c'])],yy+6,R0-170,CW-170-28,`800 19px ${HB}`);});
+    y+=bH+gap;}
+  /* players that move nothing */
+  if(dH){card(L0,y,CW,dH,'n');t('לא מזיזים כלום בליגה',R0-28,y+56,`900 32px ${HB}`,P);t(`אצל כל ${N}, בלי קפטן`,L0+28,y+56,`600 18px ${HB}`,SOFT,'left');
+    pills(DEAD.map(p=>[p.name,'#efe9f1','#76677c']),y+84,R0-28,CW-56,`800 21px ${HB}`);y+=dH+gap;}
   /* league XI pitch */
   if(pitchH){card(L0,y,CW,pitchH);t(`ההרכב של הליגה`,R0-28,y+52,`900 32px ${HB}`,P);t('מתחת לכל שחקן: אצל כמה מאמנים הוא פותח, ומי בלעדיו',R0-28,y+80,`500 18px ${HB}`,SOFT);
     const px=L0+20,py=y+96,pw=CW-40,ph=4*168;x.save();x.beginPath();x.roundRect(px,py,pw,ph,18);x.clip();for(let r=0;r<8;r++){x.fillStyle=r%2?'#03924f':'#05a05a';x.fillRect(px,py+r*ph/8,pw,ph/8);}
@@ -2036,22 +2050,9 @@ function posterOpeningFPL(g,ST){
       t(fit(txt,`700 20px ${HB}`,CW-360),R0-200,yy+28,`700 20px ${HB}`,z.tr.length||z.chip?P:SOFT,'right');
       const tag=z.hit?`−${z.hit}`:z.chip&&z.chip!=='wildcard'&&z.chip!=='freehit'?CHIP[z.chip]:'';if(tag){const tw=fkTw(tag,`800 18px ${HB}`)+24;rr(L0+28,yy+4,tw,34,17,z.hit?PK:GR);t(tag,L0+28+tw/2,yy+28,`800 18px ${HB}`,z.hit?WH:P,'center',z.hit?'ltr':'rtl');}});
     y+=tH+gap;}
-  /* match of the round */
-  if(M){card(L0,y,CW,mH,'b');t('המשחק של המחזור',R0-28,y+56,`900 32px ${HB}`,P);if(M.when)t(M.when,L0+28,y+56,`600 20px ${HB}`,SOFT,'left');
-    const cx=L0+CW/2;cvShirt(x,cx+150,y+132,110,M.home);cvShirt(x,cx-150,y+132,110,M.away);t(M.home,cx+150,y+214,`900 34px ${HB}`,P,'center','ltr');t(M.away,cx-150,y+214,`900 34px ${HB}`,P,'center','ltr');t('נגד',cx,y+142,`800 24px ${HB}`,SOFT,'center');
-    t(fit(M.own.map(p=>`${p.name} ${p.st.length}/${N}`).join(' · '),`700 19px ${HB}`,CW-56),cx,y+256,`700 19px ${HB}`,P,'center','ltr');
-    const ln=[M.up.v>0.4?`${M.up.m.he} הכי מרוויח מגולים פה (+${M.up.v.toFixed(1)} לכל נקודה)`:'',M.dn.v<-0.4?`${M.dn.m.he} הכי חשוף`:''].filter(Boolean).join('. ');t(fit(ln,`600 19px ${HB}`,CW-56),cx,y+296,`600 19px ${HB}`,SOFT,'center');
-    y+=mH+gap;}
-  /* prediction */
-  if(X){card(L0,y,CW,xH,'g');t('התחזית: כמה כל אחד צפוי לעשות',R0-28,y+56,`900 32px ${HB}`,P);const mx=X[0].xp,mn=X[X.length-1].xp,base=Math.max(0,mn-(mx-mn)*0.6-5),fr=v=>(v-base)/(mx-base),bx=L0+130,bw=CW-130-260;
-    X.forEach((r,j)=>{const yy=y+96+j*58,top=j===0,bot=j===X.length-1;t(r.m.he,R0-28,yy+30,`800 25px ${HB}`,P);rr(bx,yy+10,bw,26,13,CHIP);rr(bx+bw*(1-fr(r.xp)),yy+10,bw*fr(r.xp),26,13,top?grad(bx,0,bx+bw,0,CY,GR):bot?PK:'#b48fbc');
-      t(r.xp.toFixed(1),L0+28,yy+33,`900 26px ${HB}`,P,'left','ltr');if(top||bot){const nw=fkTw(r.m.he,`800 25px ${HB}`);t(top?'מלך?':'תחתית?',R0-28-nw-12,yy+30,`800 17px ${HB}`,top?GD:PK);}});
-    y+=xH+gap;}
-  if(SP.length){k.title('פיקנטריה של הפתיחה',y);y+=56;k.spice(SP,y);}
   k.footer('סיכום הסיום יוצא אחרי המשחק האחרון של המחזור',D.next&&D.next.gw===g+1?FK_FOOT():'');
   return k.done();
 }
-
 function posterOpeningOld(g,ST){
   const Pv=D.gw[g].preview,ms=MG(),N=ms.length,b=g-1,{HB,P,SOFT,PK,GD,LINE,CHIP,WH}=FK;
   const caps=Object.entries(Pv.captains).sort((a,c)=>c[1].length-a[1].length);
