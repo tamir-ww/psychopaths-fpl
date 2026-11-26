@@ -533,6 +533,9 @@ footer{padding-block:8px 16px!important}footer .in{font-size:12px;color:var(--so
 body.shot #view>section.band{border:1px solid var(--hair);border-radius:18px;box-shadow:0 2px 14px rgba(55,0,60,.06)}
 body.shot #view>section.band.lead{border-top:6px solid var(--yel)}
 details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--soft);list-style:none;display:inline-flex;align-items:center;gap:6px}details.how>summary::-webkit-details-marker{display:none}details.how>summary::before{content:"ⓘ";font-size:14px}details.how .note{margin-top:6px}
+
+/* wide screens: the tab bar becomes a rail beside the content, so it never covers it */
+@media(min-width:1280px){.tabbar{left:auto;right:max(10px,calc((100vw - 1080px)/2 - 92px));top:50%;bottom:auto;transform:translateY(-50%);width:78px;grid-template-columns:1fr!important;gap:4px;padding:10px 6px}.tabbar a{padding:9px 0}body{padding-bottom:24px}}
 </style>
 </head>
 <body class="shot">
@@ -726,7 +729,7 @@ function extraSections(g){
 /* ---------- views ---------- */
 const sec=(id,title,inner,cls='')=>`<section class="band ${cls}" ${cls?'':'style="padding-top:0"'}><div class="in"><h2 class="sec" id="${id}">${title}</h2>${inner}</div></section>`;
 /* ---------- summary first, the rest folded ---------- */
-const FOLDS=[['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
+const FOLDS=[['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
 const firstSentence=t=>{t=(t||'').replace(/\s+/g,' ').trim();const m=t.match(/^.{20,}?[.!?](\s|$)/);t=m?m[0].trim():t;return t.length>110?t.slice(0,108)+'…':t;};
 function foldify(TT='עוד מהמחזור'){
   const v=$('view'),made=[];
@@ -738,7 +741,8 @@ function foldify(TT='עוד מהמחזור'){
     const title=h2.textContent.split(':')[0].replace(/, מחזור אחרי מחזור$/,'');items.push({id,title,sect,box,h2});});
   if(!items.length)return;
   items.sort((x,y)=>x.sect.compareDocumentPosition(y.sect)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1);
-  const SHORT={'pre-fx':'משחקי המחזור','pre-rate':'דירוג הסגלים','pre-st':'מה על הכף',gwaw:'פרסי המחזור',odds:'סיכויים',check:'הפתיחה מול התוצאה',bets:'ההימורים',h2h:'יריבויות',form:'כושר ורצפים',caps:'קפטנים',hof:'היכל התהילה וההשפלה',month:"החודש והצ'יפים",regret:'מדד ההחלטות',acc:'דיוק הצפי',hall:'כתרים ותחתיות','awards-h':'פרסי העונה'};
+  if(items.every(it=>it.id.startsWith('pre-'))){const fi=id=>FOLDS.findIndex(f=>f[0]===id);items.sort((x,y)=>fi(x.id)-fi(y.id));}
+  const SHORT={'pre-xp':'תחזית מוקדמת','pre-chips':"צ'יפים",'pre-fx':'משחקי המחזור','pre-rate':'דירוג הסגלים','pre-st':'מה על הכף',gwaw:'פרסי המחזור',odds:'סיכויים',check:'הפתיחה מול התוצאה',bets:'ההימורים',h2h:'יריבויות',form:'כושר ורצפים',caps:'קפטנים',hof:'היכל התהילה וההשפלה',month:"החודש והצ'יפים",regret:'מדד ההחלטות',acc:'דיוק הצפי',hall:'כתרים ותחתיות','awards-h':'פרסי העונה'};
   const tabsSec=document.createElement('section');tabsSec.className='band tabsec';tabsSec.style.paddingTop='0';
   tabsSec.innerHTML=`<div class="in"><h2 class="sec">${esc(TT)}</h2><div class="tabs" role="tablist" aria-label="${esc(TT)}">${items.map((it,k)=>`<button type="button" role="tab" id="t-${it.id}" aria-controls="p-${it.id}" aria-selected="false" tabindex="-1">${esc(SHORT[it.id]||it.title)}</button>`).join('')}</div><div class="tpanels"></div></div>`;
   const panels=tabsSec.querySelector('.tpanels');
