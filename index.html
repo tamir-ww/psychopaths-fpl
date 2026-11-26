@@ -306,7 +306,7 @@ a.team{color:inherit;text-decoration:none}a.team:hover{color:var(--red)}
 .dsb{display:flex;gap:2px;height:14px;background:var(--card);border-radius:7px;overflow:hidden}.dsb i{display:block;height:100%}
 .dmn{font:900 24px Heebo,sans-serif;text-align:center}
 @media(max-width:600px){.dmr{grid-template-columns:1.6em minmax(0,1fr) 3.6em}.dmr .dmb{grid-column:2/-1;grid-row:2}}
-.cdn{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 0 14px;padding:12px 16px;border-radius:14px;background:linear-gradient(115deg,#37003c,#5d0f63);color:#fff}.cdn b{font:900 26px Heebo,sans-serif}.cdn span{font-size:14px;color:#04f5ff;font-weight:700}
+.cdn{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0;padding:5px 12px;border-radius:99px;background:light-dark(#fde7ef,#3a0b2a);color:light-dark(#b0003c,#ff6b9a)}.cdn svg{width:17px;height:17px;flex:none}.cdn b{font:800 15px Heebo,sans-serif}.cdn span{font-size:14px;color:#04f5ff;font-weight:700}
 .dfc.inj{border-inline-start-color:#ffd400}.dfc.inj.r{border-inline-start-color:#e90052}.dfn.y{color:light-dark(#9a7b00,#ffd400)}.dfn.r{color:var(--red)}
 .pcs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.pcc{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--card);border-radius:14px;padding:12px 8px;gap:3px}.pcc.top{background:linear-gradient(160deg,#04f5ff,#00ff85);color:#37003c}.pcc .shirt{width:56px;height:52px}.pcc b{font:900 17px Heebo,sans-serif}.pcc strong{font:900 24px Heebo,sans-serif;margin-top:4px}.pcc small{font-size:11.5px;opacity:.8}.pcc .dfo{justify-content:center}
 .hab{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}.hab>div{background:var(--card);border-radius:10px;padding:8px 12px;display:grid}.hab b{font-weight:900}.hab span{font-size:14px}.hab small{font-size:12.5px;color:var(--soft)}
@@ -541,6 +541,10 @@ details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;fo
 .walink svg{width:18px;height:18px}.walink:active{transform:translateY(1px)}
 .lnk{font:700 14px Heebo,sans-serif;color:var(--soft);background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .jabd>summary{list-style:none}.jabd>summary::-webkit-details-marker{display:none}.jabd[open]{flex-basis:100%}.jabd .pctl{margin-top:6px}
+@media(max-width:700px){.lead .dek.clp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+.dekmore{display:block;margin-top:2px}
+.status:empty{min-height:0;margin:0}
+@media(max-width:700px){.lead .front{margin-top:18px}}
 </style>
 </head>
 <body class="shot">
@@ -592,7 +596,9 @@ let pref=null;try{const t=localStorage.getItem('pp-theme');if(t==='light'||t==='
 const sysDark=()=>matchMedia('(prefers-color-scheme: dark)').matches;
 const effTheme=()=>pref||(rt.dataset.theme==='dark'||rt.dataset.theme==='light'?rt.dataset.theme:(sysDark()?'dark':'light'));
 const SHOT=true;
-function jumpify(){meMark();setTimeout(imgPrep,0);helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
+function dekClamp(){if(innerWidth>700)return;document.querySelectorAll('#view section.lead .dek:not([data-cl])').forEach(d=>{d.dataset.cl='1';d.classList.add('clp');
+  if(d.scrollHeight<=d.clientHeight+2){d.classList.remove('clp');return;}const b=document.createElement('button');b.type='button';b.className='lnk dekmore';b.textContent='עוד';b.onclick=()=>{d.classList.remove('clp');b.remove();};d.after(b);});}
+function jumpify(){meMark();dekClamp();setTimeout(imgPrep,0);helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
   const secs=[...v.querySelectorAll(':scope>section.band')].filter(x=>!x.classList.contains('lead'));
   const items=secs.map(x=>{const h=x.querySelector('h2.sec');if(!h)return null;let t=h.textContent.trim().split(/[:,]/)[0].replace(/^ה(טבלה|מרוץ)/,'$&');if(t.length>22)t=t.slice(0,21)+'…';return {x,t};}).filter(Boolean);
   if(items.length<4)return;const lead=v.querySelector(':scope>section.band.lead');if(!lead)return;
@@ -1369,7 +1375,7 @@ function renderPre(g){const M=preModel(g),ms=MG(),dl=D.next.deadline,c0=M.caps[0
   const head=`הדדליין ${dlFmt(dl)}`;
   const dek=`${preLeft()}. ${ni?`${ni} ${ni>1?'שחקנים בסגלים של הליגה בסימן שאלה':'שחקן בסגלים של הליגה בסימן שאלה'}${M.inj[0]?`, הבולט: ${M.inj[0].name} (${flagOf(M.inj[0]).pct}% לשחק, אצל ${M.inj[0].own.length})`:''}.`:'אין פצועים בסגלים של הליגה.'} הקפטן הכי חזק לפי התחזית: ${c0.name}. עם הסגלים של היום, ל${x0.m.he} התחזית הכי גבוהה ול${xl.m.he} הכי נמוכה.`;
   let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">לפני הדדליין · מחזור ${g}</p><h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
-   ${miniTable()}<div class="cdn"><b id="cdn">${esc(preLeft())}</b><span>${esc(new Date(dl).toLocaleString('he-IL',{weekday:'long',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}))}</span></div>
+   <div class="cdn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><b id="cdn">${esc(preLeft())}</b></div>${miniTable()}
    ${shareRow('')}<p class="status" id="st" role="status"></p></div></section>`;
   /* injuries */
   h+=sec('pre-inj','חדר הטיפולים של הליגה',(M.inj.length?`<p class="lede2">${esc('שחקנים בסגלים של הליגה עם דגל פציעה, השעיה או ספק. כדאי לבדוק לפני הדדליין.')}</p><div class="dfs">${M.inj.map(p=>{const f=flagOf(p);return `<div class="dfc inj ${f.lvl}">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><span class="dfw">${esc(p.team)} · אצל ${esc(andJ(p.own.map(m=>m.he+(p.xi.includes(m)?'':' (ספסל)'))))}</span>${p.news?`<span class="dfw">${esc(newsHe(p.news))}</span>`:''}</div><div class="dfn ${f.lvl}">${f.pct}%<small>לשחק</small></div></div>`;}).join('')}</div>`:`<p class="lede2">אין אף שחקן עם דגל בסגלים של הליגה. נדיר.</p>`)+(M.rot.length?`<h3 class="kar" style="font-size:19px;margin:18px 0 6px">סיכון לדקות</h3><p class="note" style="margin-top:0">${esc('בלי דגל פציעה, אבל לא פותחים קבוע לאחרונה. לפי הדקות והפתיחות במשחקים האחרונים, מנתוני FPL.')}</p><div class="rotl">${M.rot.map(p=>{const r=minRisk(p.id);return `<div class="rotr">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><small>${esc(`${p.team} · בהרכב של ${andJ(p.xi.map(m=>m.he))}`)}</small></div><span class="rotb m${r.lvl}">${esc(r.t)}<small>פתח ${Math.round(r.pS*100)}%</small></span></div>`;}).join('')}</div>`:''));
@@ -1504,7 +1510,7 @@ function renderSeason(){
   const head=gap?`${l.he} מוביל אחרי ${g} מחזורים`:`${l.he} ו${s2.he} צמודים בפסגה`;
   const dek=`${gap?`${gap} נקודות לפני ${s2.he}. `:''}${fav?`לפי הסימולציה ל${fav.m.he} ${Math.round(fav.w*100)}% לזכות באליפות, ול${dang.m.he} ${Math.round(dang.l*100)}% לסיים אחרון.`:''}`;
   let h=`<section class="band lead"><div class="in">${seasonSeg('season')}<p class="who" style="font-size:15px">העונה אחרי מחזור ${g}</p><h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
-   <div class="tools"><button class="btn" type="button" data-act="hall">תמונת היכל התהילה</button></div><p class="status" id="st" role="status"></p></div></section>`;
+   ${pill('hall','תמונת היכל התהילה')}<p class="status" id="st" role="status"></p></div></section>`;
   h+=sec('race-s','המרוץ: מקום בליגה בכל מחזור',`<div class="chips" id="pick" role="group" aria-label="בחירת מאמן להדגשה"></div><div class="fig" id="race"><svg role="img" aria-label="מיקום כל מאמן בליגה לאורך המחזורים"></svg></div>`);
   h+=oddsSection(g);
   h+=needSection(g);
@@ -1588,7 +1594,7 @@ function renderCoach(slug,tab='sq',vsSlug=null){PGW=0;
   let h=`<section class="band lead"><div class="in"><div class="coachnav">${VB?'<span class="cnl">מאמן:</span>':''}${ms.map(o=>`<a href="#coach-${o.slug}${tab==='sq'?'':'/'+tab}" ${o.id===m.id?'aria-current="page"':''}>${esc(o.he)}</a>`).join('')}</div>${m.team?`<p class="who" style="font-size:15px">${esc(m.team)}</p>`:''}<div class="h1row"><h1>${esc(m.he)}</h1><button type="button" class="isme" data-slug="${m.slug}" aria-pressed="${meGet()===m.slug}">${meGet()===m.slug?'✓ זה אני':'זה אני?'}</button></div>
    <nav class="seg ssg" aria-label="חלקי הפלאנר">${CT.map(([k,l])=>`<a href="#coach-${m.slug}${k==='sq'?'':'/'+k}" ${k===tab?'aria-current="page"':''}>${l}</a>`).join('')}</nav>${VB?`<div class="vspick"><span>מול:</span>${ms.filter(o=>o.id!==m.id).map(o=>`<a href="#coach-${m.slug}/vs/${o.slug}" ${o.id===VB.id?'aria-current="page"':''}>${esc(o.he)}</a>`).join('')}</div>`:''}
 ${tab==='pro'?`   <div class="facts f7"><div><b>${posAt(G,m.id)}</b><span>מקום בליגה</span></div><div><b>${x.tot[G-1]}</b><span>נקודות</span></div><div><b>${kr(x.orank[G-1])}</b><span>דירוג עולמי</span></div>${od?`<div><b class="two">${pctH(od.w)} <small>/</small> ${pctH(od.l)}</b><span>סיכוי לאליפות / לסיים אחרון</span></div>`:''}<div><b>${kc.filter(c=>c[0]).length}/${kc.filter(c=>c[1]).length}</b><span>כתרים / תחתיות</span></div>${(()=>{const L=luckSeason(m.id);return L?`<div><b><bdi dir="ltr">${L.t>0?'+':L.t<0?'−':''}${Math.abs(L.t)}</bdi></b><span>נקודות מזל העונה</span></div>`:'';})()}</div>
-   <div class="tools"><button class="btn" type="button" data-act="card">הכרטיס האישי של ${esc(m.he)}</button><button class="btn ghost" type="button" data-act="cardstory">גרסה לסטורי</button></div>`:''}<p class="status" id="st" role="status"></p></div></section>`;
+   ${pill('card',`הכרטיס האישי של ${esc(m.he)}`,'<button class="lnk" type="button" data-act="cardstory">גרסה לסטורי</button>')}`:''}<p class="status" id="st" role="status"></p></div></section>`;
   if(tab==='sq')h+=planSection(m);
   if(tab==='fx'){const sq=planSquadX(m.id),G2=fxGws();if(hasFx()&&sq.length)h+=sec('c-fx',`הלוח של ${esc(m.he)}, מחזורים ${G2[0]}–${G2[G2.length-1]}`,`<div class="fxw">${fxGrid(sq.map(p=>({team:p.team,bench:p.mult===0,h:`<b>${esc(p.name)}${p.cv===1?' ©':''}</b><small>${esc(p.team)} · ${f2(fxAvg(p.team))}</small>`})),'שחקן')}</div><p class="note">כולל הטיוטה שלך, אם יש. השורות החיוורות: ספסל. המספר ליד הקבוצה: ממוצע הקושי, נמוך זה טוב.</p>`);h+=renderFixtures(true);}
   if(tab==='fx'&&D.pm){const L=Object.entries(D.pm.R).map(([t,r])=>({t,a:r[0],d:r[1],s:r[0]/r[1]})).sort((x,y)=>y.s-x.s),mxA=Math.max(...L.map(x=>x.a)),mxD=Math.max(...L.map(x=>x.d));
@@ -1799,7 +1805,7 @@ function hallSection(g){
   if(g<3)return '';const H=hallData(g);
   const col=(arr,cls,title)=>`<div><h3 class="kar" style="font-size:21px;margin-bottom:6px">${title}</h3>${arr.map(a=>`<div class="hof ${cls}"><div><span class="gl">${esc(a.t)}</span><b>${esc(andJ(a.who))}</b><small>${nmb(a.sub)}</small></div><strong dir="ltr">${esc(a.v)}</strong></div>`).join('')}</div>`;
   return sec('hof','היכל התהילה וההשפלה',`<p class="lede2">${esc(`אחרי ${g} מחזורים. ${andJ(H.fame[0].who)} עם הכי הרבה כתרים (${H.fame[0].v}), ${andJ(H.shame[0].who)} מלך הספסל עם ${H.shame[0].v} נקודות שנשארו בחוץ.`)}</p><div class="duo">${col(H.fame,'good','התהילה')}${col(H.shame,'bad','ההשפלה')}</div>
-   <div class="tools"><button class="btn" type="button" data-act="hall">הורד את תמונת ההיכל</button></div>`);
+   ${pill('hall','תמונת ההיכל')}`);
 }
 
 /* ---------- personal coach card ---------- */
@@ -2103,7 +2109,7 @@ function renderLive(g){
   const rows=LL.map(({r,capT,chase})=>{const mv=r.prev-r.pos;return `<tr><td class="pos">${r.pl}${mv?`<span class="mv ${mv>0?'up':'dn'}">${mv>0?'▲':'▼'}${Math.abs(mv)}</span>`:''}</td><td><a class="team" href="#coach-${r.m.slug}">${esc(r.m.he)}</a><div class="mgr">${esc(capT)}</div></td><td class="n"><span class="gw ${r===M.hiR?'hi':''}">${r.live}</span></td><td class="n">${r.left.length}</td><td class="n tot">${r.tot}</td><td class="n">${r1.tot-r.tot?sg(-(r1.tot-r.tot)):'–'}</td></tr>`;}).join('');
   const chase=LL.map(({r,chase})=>`<div class="eo-c"><b>${esc(r.m.he)}</b><div>${esc(chase)}</div>${r.left.length?`<div><span class="eo-lab">נשארו:</span> ${r.left.map(p=>`${nmb(p.name)}${p.mult[r.m.id]>=2?' (C)':''}`).join(' · ')}</div>`:''}</div>`).join('');
   let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">🔴 לייב · תמונת מצב: ${esc(atStr(M.at))}</p><h1>${esc(head)}</h1><p class="dek">${esc(`ממוצע הליגה עד עכשיו: ${M.avg.toFixed(1)}. הכי גבוה כרגע: ${M.hiR.m.he} עם ${M.hiR.live}. עוד לא שיחקו: ${M.leftAll.join(', ')||'אף אחד'}.`)}</p>
-   <div class="tools"><button class="btn" type="button" data-act="liveimg">הורד תמונת לייב</button></div><p class="status" id="st" role="status"></p>
+   ${pill('liveimg','תמונת לייב לווטסאפ')}<p class="status" id="st" role="status"></p>
    <table><thead><tr><th>#</th><th>מאמן</th><th class="n">בלייב</th><th class="n">נשארו</th><th class="n">סה״כ</th><th class="n">פער</th></tr></thead><tbody>${rows}</tbody></table><p class="note">"בלייב": הנקודות במחזור עד עכשיו, כולל הקפטן, בלי בונוס זמני ובלי חילופים אוטומטיים. "נשארו": שחקנים בהרכב שעוד לא שיחקו.</p></div></section>`;
   h+=sec('chase','מה עוד יכול לקרות',`<div class="eo-coach">${chase}</div>`);
   return h;
@@ -2354,7 +2360,9 @@ const overlay=html=>{$('ovbox').innerHTML=html+'<button class="btn" type="button
 $('ov').addEventListener('click',e=>{if(e.target.id==='ov')$('ov').classList.remove('on');});
 addEventListener('keydown',e=>{if(e.key==='Escape')$('ov').classList.remove('on');});
 /* the one share action on a gameweek page: a compact pill. The image is prepared in the background, so a tap opens the share sheet right away */
-const shareRow=extra=>`<div class="shr"><button type="button" class="walink" data-act="wa1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 3v12M7.5 7.5 12 3l4.5 4.5"/></svg><span>תמונה לווטסאפ</span></button>${extra}</div>`;
+const SHI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 3v12M7.5 7.5 12 3l4.5 4.5"/></svg>';
+const pill=(act,label,extra='')=>`<div class="shr"><button type="button" class="walink" data-act="${act}">${SHI}<span>${label}</span></button>${extra}</div>`;
+const shareRow=extra=>pill('wa1','תמונה לווטסאפ',extra);
 let IMGP=null;
 const imgKey=()=>location.hash+'|'+S.gw+'|'+S.ph+'|'+(($('jabpick')||{}).value||'');
 const imgName=(fm,MODE)=>MODE==='hall'?`psychopaths-hall-gw${D.current}.png`:MODE==='card'?`psychopaths-card-${(MG().find(z=>z.id===S.coachId)||{}).slug}${fm==='story'?'-story':''}.png`:MODE==='month'?`psychopaths-month-gw${S.gw}.png`:`psychopaths-gw${S.gw}-${MODE==='live'?'live':S.ph==='final'?'final':S.ph==='pre'?'deadline':'opening'}${fm==='story'?'-story':''}.png`;
