@@ -387,7 +387,7 @@ a.team{color:inherit;text-decoration:none}a.team:hover{color:var(--red)}
 .mst a{display:inline-flex;align-items:baseline;gap:6px;border:1px solid var(--hair);background:var(--card);border-radius:99px;padding:4px 11px;font-size:14px;font-weight:700;color:var(--ink);text-decoration:none}
 .mst a i{font-style:normal;color:var(--soft);font-size:12px}.mst a small{color:var(--soft);font-weight:600;font-size:12px}.mst a.mine{border-color:var(--yel);box-shadow:inset 0 0 0 1px var(--yel)}
 .hello{max-width:1080px;margin:18px auto 0;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--hair);position:relative;box-shadow:0 6px 20px rgba(55,0,60,.08)}
-.hello>b{display:block;font-size:20px;margin-inline-end:30px}.hello p{margin:6px 0 8px;color:var(--soft)}.hello ul{margin:0 0 12px;padding-inline-start:18px;display:grid;gap:4px}.hello li{line-height:1.45}
+.hhd{display:flex;align-items:center;gap:12px;margin-inline-end:30px}.hhd img{width:56px;height:56px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #b14dff;flex:none}.hhd b{font-size:20px}.hello p{margin:6px 0 8px;color:var(--soft)}.hello ul{margin:0 0 12px;padding-inline-start:18px;display:grid;gap:4px}.hello li{line-height:1.45}
 .hello .x{position:absolute;top:8px;inset-inline-end:8px;width:34px;height:34px;border-radius:50%;border:0;background:transparent;color:var(--soft);font-size:22px;cursor:pointer}
 .hello .hme{display:grid;gap:6px;margin-bottom:12px}.hello .hme>span{font-size:14px;font-weight:700;color:var(--soft)}.hello .mepick{max-width:none}.hello .hact{display:flex;gap:8px;flex-wrap:wrap}
 @media (max-width:700px){.hello{margin:10px 8px 0}}
@@ -516,7 +516,7 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .app{position:sticky;top:0;z-index:20;background:light-dark(rgba(255,255,255,.94),rgba(22,0,26,.94));backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);padding-block:8px}
 .app .in{display:grid;gap:8px;position:relative}
 .hrow{display:flex;align-items:center;gap:10px}
-.brand{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);line-height:1;margin-inline-end:auto}.brand b{font:900 20px Heebo,sans-serif;letter-spacing:-.01em;white-space:nowrap}.brand small{font:800 9.5px Heebo,sans-serif;letter-spacing:.14em;color:light-dark(#00a35a,#00ff85);direction:ltr;text-align:right;margin-top:3px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);line-height:1;margin-inline-end:auto}.btx{display:flex;flex-direction:column}.brand small{white-space:nowrap}@media(max-width:420px){.blogo{width:34px;height:34px}.brand{gap:7px}.brand small{display:none}}.blogo{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px light-dark(#fff,#2a0630),0 0 0 3.5px #b14dff;background:#16001a}.brand b{font:900 20px Heebo,sans-serif;letter-spacing:-.01em;white-space:nowrap}.brand small{font:800 9.5px Heebo,sans-serif;letter-spacing:.14em;color:light-dark(#00a35a,#00ff85);direction:ltr;text-align:right;margin-top:3px}
 .ptitle{font:800 16px Heebo,sans-serif;color:var(--soft)}
 .app .gwnav{gap:4px}.app .ib{width:38px;height:38px;border-color:var(--hair)}.app select{height:38px;font-size:15px;border-color:var(--hair);min-width:112px;padding:0 10px}
 @media(max-width:400px){.brand b{font-size:17px}.brand small{font-size:8.5px}.app .ib{width:34px;height:34px}.app select{min-width:100px;font-size:14px}}
@@ -541,7 +541,7 @@ details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;fo
 <body class="shot">
 <header class="app band" id="apphd"><div class="in">
   <div class="hrow">
-    <a class="brand" href="#" aria-label="פסיכו פאנטזי, לדף הבית"><b>פסיכו פאנטזי</b><small>PSYCHOPATHS FPL</small></a>
+    <a class="brand" href="#" aria-label="פסיכו פאנטזי, לדף הבית"><img class="blogo" src="assets/logo.jpg" alt="" width="36" height="36"><span class="btx"><b>פסיכו פאנטזי</b><small>PSYCHOPATHS FPL</small></span></a>
     <div class="gwnav" id="gwnav">
     <button class="ib" id="prev" type="button" aria-label="המחזור הקודם"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
     <select id="gwsel" aria-label="בחירת מחזור"></select>
@@ -1881,7 +1881,7 @@ function fkCanvas(H){
   const header=(pill,headline)=>{const hl=fkLines(headline,`900 50px ${HB}`,CW,2),hH=170+hl.length*58+40;
     x.fillStyle=grad(0,0,W,hH,P,P2);x.fillRect(0,0,W,hH+60);x.save();x.globalAlpha=.9;x.fillStyle=grad(W*.55,0,W,hH,CY,GR);x.beginPath();x.moveTo(W*.62,0);x.lineTo(W,0);x.lineTo(W,hH*.55);x.closePath();x.fill();
     x.globalAlpha=.55;x.fillStyle=PK;x.beginPath();x.moveTo(0,hH+60);x.lineTo(W*.28,hH+60);x.lineTo(0,hH-60);x.closePath();x.fill();x.restore();
-    t('פסיכו פאנטזי',R0,92,`900 58px ${HB}`,WH);const nw=fkTw('פסיכו פאנטזי',`900 58px ${HB}`),pw=fkTw(pill,`800 24px ${HB}`)+40;rr(R0-nw-24-pw,56,pw,46,23,WH);t(pill,R0-nw-24-pw/2,87,`800 24px ${HB}`,P,'center');
+    t('פסיכו פאנטזי',R0,92,`900 58px ${HB}`,WH);fkLogo(x,L0+48,86,48);const nw=fkTw('פסיכו פאנטזי',`900 58px ${HB}`),pw=fkTw(pill,`800 24px ${HB}`)+40;rr(R0-nw-24-pw,56,pw,46,23,WH);t(pill,R0-nw-24-pw/2,87,`800 24px ${HB}`,P,'center');
     hl.forEach((ln,k)=>t(ln,R0,178+k*58,`900 50px ${HB}`,WH));return hH;};
   const headerH=headline=>170+fkLines(headline,`900 50px ${HB}`,CW,2).length*58+40;
   const footer=(l1,l2)=>{const fH=120,fy=H-fH;x.fillStyle=P;x.fillRect(0,fy,W,fH);x.fillStyle=grad(0,fy,W,fy,CY,GR);x.fillRect(0,fy,W,6);
@@ -2163,7 +2163,7 @@ function posterFPL(g,Md,ST){
   x.fillStyle=grad(0,0,W,hH,P,P2);x.fillRect(0,0,W,hH+60);
   x.save();x.globalAlpha=.9;x.fillStyle=grad(W*.55,0,W,hH,CY,GR);x.beginPath();x.moveTo(W*.62,0);x.lineTo(W,0);x.lineTo(W,hH*.55);x.closePath();x.fill();
   x.globalAlpha=.55;x.fillStyle=PK;x.beginPath();x.moveTo(0,hH+60);x.lineTo(W*.28,hH+60);x.lineTo(0,hH-60);x.closePath();x.fill();x.restore();
-  t('פסיכו פאנטזי',R0,92,`900 58px ${HB}`,WH);
+  t('פסיכו פאנטזי',R0,92,`900 58px ${HB}`,WH);fkLogo(x,L0+48,86,48);
   const pill=`מחזור ${g} · סיכום`;const pw=tw(pill,`800 24px ${HB}`)+40;rr(R0-tw('פסיכו פאנטזי',`900 58px ${HB}`)-24-pw,56,pw,46,23,WH);t(pill,R0-tw('פסיכו פאנטזי',`900 58px ${HB}`)-24-pw/2,87,`800 24px ${HB}`,P,'center');
   hl.forEach((ln,k)=>t(ln,R0,178+k*58,hlF,WH));
   let y=hH+gap-60;
@@ -2348,6 +2348,8 @@ document.addEventListener('change',e=>{if(e.target.id!=='jabpick')return;try{loc
 const overlay=html=>{$('ovbox').innerHTML=html+'<button class="btn" type="button" id="ovx">סגירה</button>';$('ov').classList.add('on');$('ovx').onclick=()=>$('ov').classList.remove('on');};
 $('ov').addEventListener('click',e=>{if(e.target.id==='ov')$('ov').classList.remove('on');});
 addEventListener('keydown',e=>{if(e.key==='Escape')$('ov').classList.remove('on');});
+const LOGO=new Image();LOGO.src='assets/logo.jpg';
+const fkLogo=(x,cx,cy,r)=>{if(!LOGO.complete||!LOGO.naturalWidth)return;x.save();x.beginPath();x.arc(cx,cy,r+5,0,Math.PI*2);x.fillStyle='#b14dff';x.fill();x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.closePath();x.clip();x.drawImage(LOGO,cx-r,cy-r,r*2,r*2);x.restore();};
 const siteUrl=()=>/^https?:$/.test(location.protocol)&&!/claude|localhost|127\.0\.0\.1/.test(location.hostname)?location.origin+location.pathname:'https://tamir-ww.github.io/psychopaths-fpl/';
 const isTouch=matchMedia('(pointer:coarse)').matches;
 /* ---------- "who am I": optional, remembered on this device only ---------- */
@@ -2371,7 +2373,7 @@ function installHelp(){if(bip){bip.prompt();bip.userChoice.finally(()=>{bip=null
 /* first visit: what is here (dismissible, shown once) */
 const helloSeen=()=>{try{return localStorage.getItem('pp-hello')==='1';}catch(e){return true;}};
 function helloHtml(){const me=meGet();
-  return `<div class="hello" id="hello" role="region" aria-label="ברוכים הבאים"><button type="button" class="x" id="hellox" aria-label="סגירה">×</button><b>ברוכים הבאים לפסיכו פאנטזי</b>
+  return `<div class="hello" id="hello" role="region" aria-label="ברוכים הבאים"><button type="button" class="x" id="hellox" aria-label="סגירה">×</button><div class="hhd"><img src="assets/logo.jpg" alt="" width="56" height="56"><b>ברוכים הבאים לפסיכו פאנטזי</b></div>
   <p>האתר של ליגת Psychopaths. הנתונים מתעדכנים לבד מ-FPL: כל חצי שעה בזמן משחקים ולפני הדדליין.</p>
   <ul><li><b>מחזור</b>: לפני הדדליין, תוך כדי (עם לייב בזמן המשחקים) וסיכום. בכל עמוד יש תמונה מוכנה לווטסאפ.</li><li><b>פלאנר</b>: הסגל של כל מאמן, צפי נקודות, המלצות להעברות ולקפטן. מה שתנסו שם נשמר רק אצלכם.</li><li><b>עונה</b>: המרוץ, סיכויי אליפות, יריבויות והארכיון.</li></ul>
   <div class="hme"><span>מי אתה? (לא חובה, אפשר לשנות בתפריט ⋯)</span><div class="mepick">${MG().map(m=>`<button type="button" data-me="${m.slug}" aria-pressed="${m.slug===me}">${esc(m.he)}</button>`).join('')}</div></div>
