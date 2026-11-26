@@ -2,11 +2,11 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>פסיכו פאנטזי</title>
 <meta name="description" content="סיכומים, לייב, פלאנר ותמונות לווטסאפ לליגת הפאנטזי Psychopaths.">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#37003c">
+<meta name="theme-color" content="#ffffff" id="thc">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icon-192.png" type="image/png">
@@ -545,6 +545,11 @@ details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;fo
 .dekmore{display:block;margin-top:2px}
 .status:empty{min-height:0;margin:0}
 @media(max-width:700px){.lead .front{margin-top:18px}}
+html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg button{-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.app{padding-top:calc(8px + env(safe-area-inset-top))}.app .in,#view,footer .in{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+.splash{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--soft)}.splash img{width:88px;height:88px;border-radius:50%;box-shadow:0 0 0 4px #b14dff;animation:spl 1.6s ease-in-out infinite}.splash b{font:900 22px Heebo,sans-serif;color:var(--ink)}@keyframes spl{50%{transform:scale(.94)}}@media (prefers-reduced-motion:reduce){.splash img{animation:none}}
+.offl{position:sticky;top:var(--hdh,60px);z-index:16;background:#3a0b2a;color:#ffd6e4;font:700 13px Heebo,sans-serif;text-align:center;padding:6px 10px}
+.ptr{position:fixed;top:calc(env(safe-area-inset-top) + 8px);left:50%;transform:translate(-50%,-60px);z-index:40;width:38px;height:38px;border-radius:50%;background:var(--card);box-shadow:0 4px 14px rgba(55,0,60,.2);display:grid;place-items:center;color:var(--soft);pointer-events:none}.ptr svg{width:20px;height:20px}.ptr.go{color:#1faa59}.ptr.spin svg{animation:ptrs .8s linear infinite}@keyframes ptrs{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body class="shot">
@@ -567,7 +572,7 @@ details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;fo
   <div class="menupop" id="menupop" hidden><span class="pl">מי אני? (לא חובה)</span><div class="mepick" id="mepick" role="group" aria-label="מי אני"></div><div class="melinks" id="melinks" hidden></div><button type="button" class="btn ghost" id="glsb">מילון מונחים</button><button type="button" class="btn ghost inst" id="inst2">הוספה למסך הבית</button><button type="button" class="btn ghost" id="hello2">מה יש באתר?</button><span class="pl">תצוגה</span><div class="seg theme" role="group" aria-label="מצב תצוגה"><button type="button" id="th-light" data-th="light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span class="t">בהיר</span></button><button type="button" id="th-dark" data-th="dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="t">כהה</span></button></div></div>
   <span class="sr" id="issue"></span>
 </div></header>
-<main id="view"><section class="band"><div class="in"><p>טוען…</p></div></section></main>
+<main id="view"><div class="splash"><img src="assets/logo.jpg" alt="" width="88" height="88"><b>פסיכו פאנטזי</b><span>טוען…</span></div></main><div class="offl" id="offl" hidden></div><div class="ptr" id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></div>
 
 <footer class="band"><div class="in" id="foot"></div></footer>
 <nav class="tabbar" id="tabbar" aria-label="ניווט ראשי">
@@ -609,7 +614,7 @@ function shotify(){const iss=$('issue').textContent.replace(/^פסיכו פאנ�
   document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
     sc.querySelectorAll('.note').forEach(n=>{if(n.textContent.length>170&&!n.closest('details')){const d=document.createElement('details');d.className='how';d.innerHTML='<summary>איך זה מחושב?</summary>';n.replaceWith(d);d.appendChild(n);}});
     const hd=document.createElement('div');hd.className='shothd';hd.innerHTML=`<b>פסיכו פאנטזי</b><span>${esc(iss)}</span>`;inn.prepend(hd);});}
-const applyTheme=()=>{const t=effTheme();if(rt.dataset.mode!==t)rt.dataset.mode=t;$('th-light').setAttribute('aria-pressed',t==='light');$('th-dark').setAttribute('aria-pressed',t==='dark');if(drawRace)drawRace();};
+const applyTheme=()=>{const t=effTheme();if(rt.dataset.mode!==t)rt.dataset.mode=t;{const m=document.getElementById('thc');if(m)m.content=t==='dark'?'#16001a':'#ffffff';}$('th-light').setAttribute('aria-pressed',t==='light');$('th-dark').setAttribute('aria-pressed',t==='dark');if(drawRace)drawRace();};
 const setHd=()=>{const h=$('apphd');if(h)document.documentElement.style.setProperty('--hdh',h.offsetHeight+'px');};addEventListener('resize',setHd);setTimeout(setHd,50);new ResizeObserver(setHd).observe(document.getElementById('apphd'));
 applyTheme();
 $('menub').addEventListener('click',e=>{e.stopPropagation();const p=$('menupop'),o=p.hidden;p.hidden=!o;$('menub').setAttribute('aria-expanded',o);});
@@ -1648,6 +1653,7 @@ function navSet(k){const tb=$('tabbar');let lc=meGet();if(!lc){try{lc=localStora
   tb.querySelectorAll('a').forEach(a=>{if(a.dataset.nav===k)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
 function route(){
   $('ov').classList.remove('on');
+  if(location.hash==='#me'){let lc=meGet();if(!lc){try{lc=localStorage.getItem('pp-coach');}catch(e){}}if(!MG().some(m=>m.slug===lc))lc=MG()[0].slug;location.replace('#coach-'+lc);return;}
   const hs=location.hash,navk=(hs.startsWith('#coach-')||hs==='#fixtures')?'coach':(hs==='#market'||hs==='#archive'||hs==='#season')?'season':'gw';navSet(navk);
   const other=hs==='#archive'||hs==='#season'||hs==='#market'||hs==='#fixtures'||hs.startsWith('#coach-');
   $('gwnav').hidden=other;$('phbar').hidden=other;$('ptitle').hidden=!other;
@@ -1674,7 +1680,10 @@ const go=(gw,ph)=>{const h=`#gw${gw}-${ph}`;if(location.hash===h)route();else lo
 $('prev').onclick=()=>go(S.gw-1,S.ph);$('next').onclick=()=>go(S.gw+1,S.ph);
 $('gwsel').onchange=e=>go(+e.target.value,S.ph);
 $('phbar').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(S.gw,b.dataset.ph);});
-addEventListener('hashchange',()=>{route();scrollTo({top:0});});
+/* new page: top. Back to the page you came from: where you were */
+const POS={},STK=[location.hash];
+addEventListener('scroll',()=>{POS[location.hash]=scrollY;},{passive:true});
+addEventListener('hashchange',()=>{const h=location.hash,back=STK.length>1&&STK[STK.length-2]===h,y=POS[h];if(back)STK.pop();else STK.push(h);route();scrollTo({top:back&&y?y:0});});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-lu]');if(!b)return;const box=$('mlus');if(!box)return;const c=box.children[+b.dataset.lu];if(c)c.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});document.querySelectorAll('[data-lu]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
 document.addEventListener('scroll',e=>{const box=e.target;if(!box||box.id!=='mlus')return;clearTimeout(box.__t);box.__t=setTimeout(()=>{const mid=box.getBoundingClientRect().left+box.clientWidth/2;let best=0,bd=1e9;[...box.children].forEach((c,k)=>{const r=c.getBoundingClientRect(),d=Math.abs(r.left+r.width/2-mid);if(d<bd){bd=d;best=k;}});document.querySelectorAll('[data-lu]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.lu===best));},80);},true);
 
@@ -2427,7 +2436,16 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
 });
 
 /* ---------- boot ---------- */
-const loadData=()=>fetch('data.json?v='+Math.floor(Date.now()/6e4),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
+const loadData=()=>fetch('data.json?v='+Math.floor(Date.now()/6e4),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);const off=r.headers.get('x-pp-offline')==='1';return r.json().then(d=>{offBar(off,d);return d;});});
+function offBar(off,d){const b=$('offl');if(!b)return;b.hidden=!off;if(off){const t=new Date(d.builtAt||d.updated);b.textContent=`אין חיבור. מוצגים הנתונים מ-${isNaN(t)?'':t.toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}`;}}
+addEventListener('online',()=>{const b=$('offl');if(b&&!b.hidden)location.reload();});
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+/* the installed app has no pull-to-refresh on iPhone: add one */
+(()=>{if(!standalone()||!('ontouchstart' in window))return;const P=$('ptr');let y0=null,dy=0;
+  addEventListener('touchstart',e=>{y0=scrollY<=0&&!$('ov').classList.contains('on')&&!document.body.classList.contains('sheet')?e.touches[0].clientY:null;dy=0;},{passive:true});
+  addEventListener('touchmove',e=>{if(y0==null)return;dy=Math.max(0,e.touches[0].clientY-y0);P.style.transform=`translate(-50%,${Math.min(dy,110)-50}px) rotate(${dy*3}deg)`;P.classList.toggle('go',dy>80);},{passive:true});
+  addEventListener('touchend',()=>{if(y0==null)return;if(dy>80){P.classList.add('spin');location.reload();}else P.style.transform='';y0=null;},{passive:true});})();
+document.getElementById('tabbar').addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.getAttribute('aria-current')==='page'&&scrollY>40){e.preventDefault();scrollTo({top:0,behavior:'smooth'});}});
 const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=new Date(v);const w=isNaN(t)?v:D.builtAt?t.toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'}):t.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
   $('foot').textContent=`פסיכו פאנטזי · ליגת Psychopaths, ${D.managers.length} מאמנים · הנתונים מה-API הציבורי של Fantasy Premier League, מתעדכנים לבד · עודכן ${w}`;};
 const gwOpts=()=>{$('gwsel').innerHTML=Array.from({length:maxGw()},(_,k)=>`<option value="${k+1}">מחזור ${k+1}</option>`).join('');};
