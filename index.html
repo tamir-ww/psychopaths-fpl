@@ -564,6 +564,21 @@ html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg butto
 .rmini{display:flex;align-items:center;gap:8px;width:100%;margin:10px 0 0;padding:8px 12px;border-radius:12px;border:0;background:linear-gradient(115deg,#37003c,#5d0f63);color:#fff;font:600 14px Heebo,sans-serif;text-align:right;cursor:pointer}
 .rmini .rml{font-size:11.5px;font-weight:800;color:#04f5ff;white-space:nowrap}.rmini .rmt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rmini em{font-style:normal;color:#00ff85;font-weight:900;margin-inline-start:4px}.rmini .rmg{font-weight:900;color:#00ff85}
 .rmini.ok{background:var(--card);color:var(--soft)}.rmini.ok .rml{color:var(--soft)}
+
+/* quiet card watermark: context + the crest (enough for a screenshot, no shouting) */
+.shothd{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 10px;padding:0 0 6px;border-bottom:1px solid var(--hair);font-size:12px;color:var(--soft);font-weight:700}
+.shothd img{width:18px;height:18px;border-radius:50%;object-fit:cover;opacity:.9;flex:none}
+/* phone header: crest, the gameweek switcher in the middle, the menu */
+@media(max-width:700px){
+ .app{padding-block:6px 8px}.app .in{padding-inline:2px}
+ .hrow{gap:6px;min-height:40px}.brand{margin-inline-end:0}.brand .btx{display:none}.blogo{width:34px;height:34px}
+ .gwnav{flex:1;justify-content:center;gap:6px}.ptitle{flex:1;text-align:center;font-size:16px;color:var(--ink)}
+ .gwnav .ib{width:36px;height:36px;border:0;background:var(--card)}.gwnav .ib:disabled{opacity:.3}
+ #gwsel{font:800 16px Heebo,sans-serif;color:var(--ink);background:var(--card) no-repeat left 10px center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23887' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");border:0;border-radius:99px;padding:7px 14px 7px 30px;-webkit-appearance:none;appearance:none;text-align:center;min-width:118px}
+ .app .phase{margin-top:8px}.app .phase button{min-height:34px;font-size:14px}
+ .menub{width:34px!important;height:34px!important}
+}
+@media(max-width:700px){.app .phase button{white-space:nowrap;padding-inline:4px;font-size:13.5px;gap:5px}.app .phase .dot{width:7px;height:7px}}
 </style>
 </head>
 <body class="shot">
@@ -625,9 +640,9 @@ function jumpify(){meMark();dekClamp();setTimeout(imgPrep,0);helloShow(helloForc
   nav.innerHTML=`<div class="in">${items.map((it,k)=>`<button type="button" data-jump="${k}">${esc(it.t)}</button>`).join('')}</div>`;lead.after(nav);
   nav.addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const t=items[+b.dataset.jump].x,y=t.getBoundingClientRect().top+scrollY-($('apphd')?$('apphd').offsetHeight:110)-8;scrollTo({top:y,behavior:'smooth'});});}
 function shotify(){const iss=$('issue').textContent.replace(/^פסיכו פאנטזי · /,'');
-  document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.classList.contains('cplan')||sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
+  document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.classList.contains('cplan')||sc.classList.contains('lead')||sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
     sc.querySelectorAll('.note').forEach(n=>{if(n.textContent.length>170&&!n.closest('details')){const d=document.createElement('details');d.className='how';d.innerHTML='<summary>איך זה מחושב?</summary>';n.replaceWith(d);d.appendChild(n);}});
-    const hd=document.createElement('div');hd.className='shothd';hd.innerHTML=`<b>פסיכו פאנטזי</b><span>${esc(iss)}</span>`;inn.prepend(hd);});}
+    const hd=document.createElement('div');hd.className='shothd';hd.innerHTML=`<span>${esc(iss)}</span><img src="assets/logo.jpg" alt="פסיכו פאנטזי" width="18" height="18">`;inn.prepend(hd);});}
 const applyTheme=()=>{const t=effTheme();if(rt.dataset.mode!==t)rt.dataset.mode=t;{const m=document.getElementById('thc');if(m)m.content=t==='dark'?'#16001a':'#ffffff';}$('th-light').setAttribute('aria-pressed',t==='light');$('th-dark').setAttribute('aria-pressed',t==='dark');if(drawRace)drawRace();};
 const setHd=()=>{const h=$('apphd');if(h)document.documentElement.style.setProperty('--hdh',h.offsetHeight+'px');};addEventListener('resize',setHd);setTimeout(setHd,50);new ResizeObserver(setHd).observe(document.getElementById('apphd'));
 applyTheme();
@@ -827,7 +842,7 @@ function renderPreview(g){
    <div><h2 class="sec">${base>0?`הטבלה לפני מחזור ${g}`:'לפני הפתיחה'}</h2>${o?`<table><thead><tr><th>#</th><th>מאמן</th><th class="n">סה״כ</th><th class="n">פער</th></tr></thead><tbody>${o.map((m,r)=>`<tr><td class="pos">${r+1}</td><td class="team">${esc(m.he)}</td><td class="n tot">${md(m.id).tot[base-1]}</td><td class="n">${r?sg(-(md(o[0].id).tot[base-1]-md(m.id).tot[base-1])):'–'}</td></tr>`).join('')}</tbody></table>`:''}</div></div></div></section>`;
   h+=P.eo?pvSections(g):eoSection(g);
   if(P.eo&&D.planner)h+=pvPredSection(g);
-  else if(P.prediction){const pr=P.prediction;h+=sec('pred','התחזית של פסיכו פאנטזי',`<div class="kings"><div class="k king"><div class="lbl">מלך המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.king))}</span></div></div><div class="k flop"><div class="lbl">תחתית המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.flop))}</span></div></div></div>${pr.why?`<p class="lede2" style="margin-top:12px">${esc(pr.why)}</p>`:''}<p class="note">בסיכום הסיום נבדוק אם צדקנו.</p>`);}
+  else if(P.prediction){const pr=P.prediction;h+=sec('pred','התחזית',`<div class="kings"><div class="k king"><div class="lbl">מלך המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.king))}</span></div></div><div class="k flop"><div class="lbl">תחתית המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.flop))}</span></div></div></div>${pr.why?`<p class="lede2" style="margin-top:12px">${esc(pr.why)}</p>`:''}<p class="note">בסיכום הסיום נבדוק אם צדקנו.</p>`);}
   h+=sec('watch','למה לצפות',`<div class="jabs">${P.watch.slice(0,3).map(j=>`<div class="jab"><h3>${esc(j[0])}</h3><p>${esc(j[1])}</p></div>`).join('')}</div>`);
   if(!P.eo)h+=sec('diffs','מה משותף לכולם ומה רק לאחד',`<div class="two"><div><h3 class="kar" style="font-size:20px;margin-bottom:10px">התבנית: פותחים אצל רוב הליגה</h3><div class="tpl">${tpl}</div></div><div><h3 class="kar" style="font-size:20px;margin-bottom:10px">הדיפרנשלים: פותחים אצל מאמן אחד בלבד</h3><div style="overflow-x:auto">${diffs}</div><p class="note">קושי המשחק לפי FPL: 2 קל, 5 קשה. "בעולם": אחוז המאמנים בעולם שמחזיקים בשחקן.</p></div></div>`);
   h+=P.eo?pvMoves(g):sec('moves','מה כל אחד עשה לפני הדדליין',`<div class="moves">${moves}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי דומים</h3><div class="moves">${pr('similar')}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי שונים</h3><div class="moves">${pr('different')}</div>`);
@@ -1324,7 +1339,7 @@ function predOf(g){const P=D.gw[g]&&D.gw[g].preview;if(!P)return null;if(P.predi
 function pvPredSection(g){const X=pvXp(g);if(!X)return '';const mx=X[0].xp,P=D.gw[g].preview,pr=P.prediction;
   const k=pr?MG().find(m=>m.id==pr.king):X[0].m,f=pr?MG().find(m=>m.id==pr.flop):X[X.length-1].m;
   const rows=X.map((x,i)=>`<div class="xpr${x.m.id===k.id?' k':x.m.id===f.id?' f':''}"><a class="xn cl" href="#coach-${x.m.slug}">${esc(x.m.he)}</a><div class="xb"><i style="width:${(x.xp/mx*100).toFixed(1)}%"></i></div><b>${x.xp.toFixed(1)}</b><small>${x.best?`הכי הרבה מ-${nmb(x.best.n)}${x.best.c?' (קפטן)':''}`:''}</small></div>`).join('');
-  return sec('pred','התחזית של פסיכו פאנטזי',`<div class="kings"><div class="k king"><div class="lbl">מלך המחזור לפי התחזית</div><div class="big"><span>${esc(k.he)}</span></div></div><div class="k flop"><div class="lbl">תחתית המחזור לפי התחזית</div><div class="big"><span>${esc(f.he)}</span></div></div></div>${pr&&pr.why?`<p class="lede2" style="margin-top:12px">${esc(pr.why)}</p>`:''}<h3 class="kar" style="font-size:18px;margin:18px 0 6px">כמה כל אחד צפוי לעשות</h3><div class="xps">${rows}</div><p class="note">הצפי בנוי כמו ניקוד FPL: סיכוי לפתוח ולשחק 60 דקות (לפי הפתיחות והדקות במשחקים האחרונים), שערים ובישולים לפי ה-xG וה-xA של השחקן ל-90 דקות, שער נקי לפי כוח ההגנה של הקבוצה מול כוח ההתקפה של היריבה, הצלות, בונוס ותרומה הגנתית. כוח כל קבוצה מחושב מה-xG ומהשערים שלה ונגדה, כשהמשחקים האחרונים שוקלים יותר, עם יתרון ביתיות. בסוף כפול הסיכוי שלו לשחק לפי FPL. הכל מה-API הרשמי של FPL. קפטן נספר פעמיים. מורידים קנסות. בסיכום הסיום נבדוק אם צדקנו.</p>`);}
+  return sec('pred','התחזית',`<div class="kings"><div class="k king"><div class="lbl">מלך המחזור לפי התחזית</div><div class="big"><span>${esc(k.he)}</span></div></div><div class="k flop"><div class="lbl">תחתית המחזור לפי התחזית</div><div class="big"><span>${esc(f.he)}</span></div></div></div>${pr&&pr.why?`<p class="lede2" style="margin-top:12px">${esc(pr.why)}</p>`:''}<h3 class="kar" style="font-size:18px;margin:18px 0 6px">כמה כל אחד צפוי לעשות</h3><div class="xps">${rows}</div><p class="note">הצפי בנוי כמו ניקוד FPL: סיכוי לפתוח ולשחק 60 דקות (לפי הפתיחות והדקות במשחקים האחרונים), שערים ובישולים לפי ה-xG וה-xA של השחקן ל-90 דקות, שער נקי לפי כוח ההגנה של הקבוצה מול כוח ההתקפה של היריבה, הצלות, בונוס ותרומה הגנתית. כוח כל קבוצה מחושב מה-xG ומהשערים שלה ונגדה, כשהמשחקים האחרונים שוקלים יותר, עם יתרון ביתיות. בסוף כפול הסיכוי שלו לשחק לפי FPL. הכל מה-API הרשמי של FPL. קפטן נספר פעמיים. מורידים קנסות. בסיכום הסיום נבדוק אם צדקנו.</p>`);}
 function pvPredCheck(g){const X=pvXp(g);if(!X||X[0].act==null)return '';const D2=X.map(x=>({...x,d:x.act-x.xp})).sort((a,b)=>b.d-a.d),u=D2[0],w=D2[D2.length-1];
   return `<h3 class="kar" style="font-size:20px;margin:0 0 6px">התחזית מול המציאות</h3><p class="lede2">${esc(u.d<0?`כולם עשו פחות מהתחזית, מחזור חלש לכל הליגה. ${u.m.he} הכי קרוב: ${u.act} נקודות, ${Math.round(-u.d)} מתחת. ${w.m.he} הכי רחוק: ${w.act}, ${Math.round(-w.d)} מתחת.`:w.d>0?`כולם עשו יותר מהתחזית. ${u.m.he} הכי הפתיע: ${u.act} נקודות, ${Math.round(u.d)} מעל. ${w.m.he} הכי קרוב לתחזית: ${Math.round(w.d)} מעל.`:`${u.m.he} הכי הפתיע לטובה: ${u.act} נקודות, ${Math.round(u.d)} מעל התחזית. ${w.m.he} הכי אכזב: ${w.act}, ${Math.round(-w.d)} מתחת.`)}</p><div class="xck">${D2.map(x=>`<div><span>${esc(x.m.he)}</span><small>חזינו ${Math.round(x.xp)}</small><b>${x.act}</b><em class="${x.d>=0?'eo-g':'eo-bad'}">${xf(Math.round(x.d))}</em></div>`).join('')}</div>`;}
 
@@ -2486,19 +2501,12 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
   addEventListener('touchstart',e=>{y0=scrollY<=0&&!$('ov').classList.contains('on')&&!document.body.classList.contains('sheet')?e.touches[0].clientY:null;dy=0;},{passive:true});
   addEventListener('touchmove',e=>{if(y0==null)return;dy=Math.max(0,e.touches[0].clientY-y0);P.style.transform=`translate(-50%,${Math.min(dy,110)-50}px) rotate(${dy*3}deg)`;P.classList.toggle('go',dy>80);},{passive:true});
   addEventListener('touchend',()=>{if(y0==null)return;if(dy>80){P.classList.add('spin');buzz(15);location.reload();}else P.style.transform='';y0=null;},{passive:true});})();
-/* swipe left/right on a gameweek page = the next / previous gameweek (RTL: the next one is to the left) */
-(()=>{if(!('ontouchstart' in window))return;let st=null;
-  const hscroll=el=>{for(let n=el;n&&n!==document.body;n=n.parentElement){if(n.scrollWidth>n.clientWidth+4){const ox=getComputedStyle(n).overflowX;if(ox==='auto'||ox==='scroll')return true;}if(n.matches&&n.matches('input,select,textarea,.pitch,.sheet,#ov'))return true;}return false;};
-  document.getElementById('view').addEventListener('touchstart',e=>{const t=e.touches[0];st=e.touches.length===1&&!$('gwnav').hidden&&t.clientX>24&&t.clientX<innerWidth-24&&!hscroll(e.target)?{x:t.clientX,y:t.clientY,t:Date.now()}:null;},{passive:true});
-  document.getElementById('view').addEventListener('touchend',e=>{if(!st)return;const t=e.changedTouches[0],dx=t.clientX-st.x,dy=t.clientY-st.y,dt=Date.now()-st.t;st=null;
-    if(Math.abs(dx)<80||Math.abs(dy)>Math.abs(dx)*0.5||dt>700)return;const b=$(dx>0?'next':'prev');if(!b||b.disabled)return;buzz(8);
-    const v=$('view');v.classList.remove('swl','swr');void v.offsetWidth;v.classList.add(dx>0?'swl':'swr');b.click();},{passive:true});})();
 /* a short tick on Android when something happens (iPhone browsers do not support vibration) */
 const buzz=(ms=10)=>{try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}};
 document.addEventListener('click',e=>{if(e.target.closest('.walink,[data-me],.isme,[data-recapply],[data-trtry],[data-txin],[data-txsw],[data-txact],[data-txchip],[data-txreset],[data-txu]'))buzz(10);},true);
 document.getElementById('tabbar').addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.getAttribute('aria-current')==='page'&&scrollY>40){e.preventDefault();scrollTo({top:0,behavior:'smooth'});}});
 const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=new Date(v);const w=isNaN(t)?v:D.builtAt?t.toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'}):t.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
-  $('foot').textContent=`פסיכו פאנטזי · ליגת Psychopaths, ${D.managers.length} מאמנים · הנתונים מה-API הציבורי של Fantasy Premier League, מתעדכנים לבד · עודכן ${w}`;};
+  $('foot').textContent=`ליגת Psychopaths · ${D.managers.length} מאמנים · הנתונים מ-Fantasy Premier League, מתעדכנים לבד · עודכן ${w}`;};
 const gwOpts=()=>{$('gwsel').innerHTML=Array.from({length:maxGw()},(_,k)=>`<option value="${k+1}">מחזור ${k+1}</option>`).join('');};
 let loadedAt=0;
 loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
