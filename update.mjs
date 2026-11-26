@@ -1,6 +1,7 @@
 // Builds data.json for "פסיכו פאנטזי" from the public FPL API plus curated.json (the hand-written text).
 // GitHub Actions: `node update.mjs _site` writes _site/data.json. In a fantasy.premierleague.com tab: window.UPD.build(get, curated).
 // Nothing here needs a login or a secret: every endpoint used is public.
+const CHIPHE = { wildcard: 'וויילדקארד', freehit: 'פרי היט', bboost: "בנץ' בוסט", '3xc': 'טריפל קפטן' };
 const MONTH = { August: 'אוגוסט', September: 'ספטמבר', October: 'אוקטובר', November: 'נובמבר', December: 'דצמבר', January: 'ינואר', February: 'פברואר', March: 'מרץ', April: 'אפריל', May: 'מאי' };
 const num = v => +v || 0, sum = a => a.reduce((x, y) => x + y, 0);
 
@@ -108,7 +109,7 @@ async function build(get, CUR, log = () => {}) {
     const capTop = Object.entries(caps).sort((a, b) => b[1].length - a[1].length), he = id => (managers.find(x => x.id === id) || {}).he;
     const auto = capTop.length > 1 ? `${capTop[0][1].length === 1 ? 'אחד' : capTop[0][1].length} על ${capTop[0][0]}, ${capTop.slice(1).map(c => `${c[1].length === 1 ? 'אחד' : c[1].length} על ${c[0]}`).join(', ')}` : `כולם על ${capTop[0] ? capTop[0][0] : ''}`;
     const movers = Object.keys(transfers).map(Number);
-    gw[k].preview = { headline: auto, dek: `לפני מחזור ${g}. ${movers.length ? `${movers.map(he).join(', ')} ${movers.length > 1 ? 'עשו' : 'עשה'} העברות` : 'אף אחד לא עשה העברה'}${Object.keys(chips).length ? `, ו${Object.keys(chips).map(id => `${he(+id)} הפעיל ${chips[id]}`).join(', ')}` : ''}.`,
+    gw[k].preview = { headline: auto, dek: `לפני מחזור ${g}. ${movers.length ? `${movers.map(he).join(', ')} ${movers.length > 1 ? 'עשו' : 'עשה'} העברות` : 'אף אחד לא עשה העברה'}${Object.keys(chips).length ? `, ו${Object.keys(chips).map(id => `${he(+id)} הפעיל ${CHIPHE[chips[id]] || chips[id]}`).join(', ')}` : ''}.`,
       captains: Object.fromEntries(capTop), chips, transfers, hits, template, diffs, pairs, watch: [], jabs: [], eo };
     gw[k].kick = kickOf(g); gw[k].fdr = fdrOf(g);
     // finished: how the differentials did. In progress: a live snapshot (points so far)
