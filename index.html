@@ -550,6 +550,12 @@ html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg butto
 .splash{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--soft)}.splash img{width:88px;height:88px;border-radius:50%;box-shadow:0 0 0 4px #b14dff;animation:spl 1.6s ease-in-out infinite}.splash b{font:900 22px Heebo,sans-serif;color:var(--ink)}@keyframes spl{50%{transform:scale(.94)}}@media (prefers-reduced-motion:reduce){.splash img{animation:none}}
 .offl{position:sticky;top:var(--hdh,60px);z-index:16;background:#3a0b2a;color:#ffd6e4;font:700 13px Heebo,sans-serif;text-align:center;padding:6px 10px}
 .ptr{position:fixed;top:calc(env(safe-area-inset-top) + 8px);left:50%;transform:translate(-50%,-60px);z-index:40;width:38px;height:38px;border-radius:50%;background:var(--card);box-shadow:0 4px 14px rgba(55,0,60,.2);display:grid;place-items:center;color:var(--soft);pointer-events:none}.ptr svg{width:20px;height:20px}.ptr.go{color:#1faa59}.ptr.spin svg{animation:ptrs .8s linear infinite}@keyframes ptrs{to{transform:rotate(360deg)}}
+.mepq{max-width:1080px;margin:12px auto;padding:12px 16px;border:1px dashed var(--hair);border-radius:16px;display:grid;gap:6px}.mepq b{font-size:16px}.mepq span{font-size:14px;color:var(--soft)}.mepq .mepick{max-width:none}@media(max-width:700px){.mepq{margin:10px 8px}}
+.mecs{display:grid;grid-template-columns:repeat(auto-fit,minmax(15em,1fr));gap:10px;margin-top:10px}
+.mec{background:var(--card);border-radius:14px;padding:12px 14px;border-inline-start:4px solid var(--hair)}.mec.warn{border-inline-start-color:#e90052}.mec.ok{border-inline-start-color:#1faa59}
+.mec h3{font:800 14px Heebo,sans-serif;color:var(--soft);margin:0 0 6px}.mec p{margin:0 0 4px}.mec small{display:block;color:var(--soft);font-size:13px;line-height:1.4}.mec ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}.mec li small{display:block}.mec .swp{margin:4px 0 6px}
+#view.swl{animation:swl .25s ease-out}#view.swr{animation:swr .25s ease-out}@keyframes swl{from{transform:translateX(-24px);opacity:.4}}@keyframes swr{from{transform:translateX(24px);opacity:.4}}@media (prefers-reduced-motion:reduce){#view.swl,#view.swr{animation:none}}
+.mec .dfn{display:inline-block;font:800 12.5px Heebo,sans-serif;padding:1px 8px;border-radius:99px;background:light-dark(#eefaf3,#0c2a1a);vertical-align:1px}.mec .dfn.y,.mec .dfn.c{background:light-dark(#fff6d6,#2e2600);color:light-dark(#8a6d00,#ffd400)}.mec .dfn.r{background:light-dark(#fde7ef,#3a0b2a)}
 </style>
 </head>
 <body class="shot">
@@ -1382,6 +1388,7 @@ function renderPre(g){const M=preModel(g),ms=MG(),dl=D.next.deadline,c0=M.caps[0
   let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">לפני הדדליין · מחזור ${g}</p><h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
    <div class="cdn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><b id="cdn">${esc(preLeft())}</b></div>${miniTable()}
    ${shareRow('')}<p class="status" id="st" role="status"></p></div></section>`;
+  h+=meSection(g,M);
   /* injuries */
   h+=sec('pre-inj','חדר הטיפולים של הליגה',(M.inj.length?`<p class="lede2">${esc('שחקנים בסגלים של הליגה עם דגל פציעה, השעיה או ספק. כדאי לבדוק לפני הדדליין.')}</p><div class="dfs">${M.inj.map(p=>{const f=flagOf(p);return `<div class="dfc inj ${f.lvl}">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><span class="dfw">${esc(p.team)} · אצל ${esc(andJ(p.own.map(m=>m.he+(p.xi.includes(m)?'':' (ספסל)'))))}</span>${p.news?`<span class="dfw">${esc(newsHe(p.news))}</span>`:''}</div><div class="dfn ${f.lvl}">${f.pct}%<small>לשחק</small></div></div>`;}).join('')}</div>`:`<p class="lede2">אין אף שחקן עם דגל בסגלים של הליגה. נדיר.</p>`)+(M.rot.length?`<h3 class="kar" style="font-size:19px;margin:18px 0 6px">סיכון לדקות</h3><p class="note" style="margin-top:0">${esc('בלי דגל פציעה, אבל לא פותחים קבוע לאחרונה. לפי הדקות והפתיחות במשחקים האחרונים, מנתוני FPL.')}</p><div class="rotl">${M.rot.map(p=>{const r=minRisk(p.id);return `<div class="rotr">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><small>${esc(`${p.team} · בהרכב של ${andJ(p.xi.map(m=>m.he))}`)}</small></div><span class="rotb m${r.lvl}">${esc(r.t)}<small>פתח ${Math.round(r.pS*100)}%</small></span></div>`;}).join('')}</div>`:''));
   /* captain */
@@ -1676,7 +1683,8 @@ function route(){
   if(S.ph==='pre'&&hasPre(S.gw))renderPre(S.gw);else if(S.ph==='final'&&hasFinal(S.gw))renderFinal(S.gw);else if(S.ph==='preview'&&hasPrev(S.gw))renderPreview(S.gw);else renderEmpty(S.gw,S.ph);
   shotify();jumpify();
 }
-const go=(gw,ph)=>{const h=`#gw${gw}-${ph}`;if(location.hash===h)route();else location.hash=h;};
+const okPh=(g,ph)=>ph==='pre'?hasPre(g):ph==='preview'?hasPrev(g):g<=D.current;
+const go=(gw,ph)=>{if(!okPh(gw,ph))ph=['final','preview','pre'].find(p=>okPh(gw,p))||'final';const h=`#gw${gw}-${ph}`;if(location.hash===h)route();else location.hash=h;};
 $('prev').onclick=()=>go(S.gw-1,S.ph);$('next').onclick=()=>go(S.gw+1,S.ph);
 $('gwsel').onchange=e=>go(+e.target.value,S.ph);
 $('phbar').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(S.gw,b.dataset.ph);});
@@ -2391,6 +2399,22 @@ function meMenu(){const me=meGet(),p=$('mepick');if(!p||!D)return;
 function meMark(){const me=meGet();document.querySelectorAll('tr.me').forEach(r=>r.classList.remove('me'));document.querySelectorAll('.coachnav a.mine').forEach(a=>a.classList.remove('mine'));if(!me)return;
   document.querySelectorAll(`#view a.team[href="#coach-${me}"],#view a.team[href^="#coach-${me}/"]`).forEach(a=>{const r=a.closest('tr');if(r)r.classList.add('me');});
   document.querySelectorAll(`.coachnav a[href="#coach-${me}"],.coachnav a[href^="#coach-${me}/"]`).forEach(a=>a.classList.add('mine'));}
+/* the pre-deadline page starts with what matters to "me" (optional choice), then the league-wide sections */
+function meSection(g,M){const me=MG().find(m=>m.slug===meGet());
+  if(!me)return `<div class="mepq"><b>רוצה לראות קודם את מה שחשוב לך?</b><span>בחר מי אתה (לא חובה):</span><div class="mepick">${MG().map(m=>`<button type="button" data-me="${m.slug}" aria-pressed="false">${esc(m.he)}</button>`).join('')}</div></div>`;
+  if(!hasPlan(me.id))return '';
+  const o=orderAt(D.current),t=m=>md(m.id).tot[D.current-1],pos=1+o.filter(x=>t(x)>t(me)).length,gap=t(o[0])-t(me),xr=M.xp.findIndex(x=>x.m.id===me.id),xv=xr>=0?M.xp[xr].xp:0;
+  const inj=M.inj.filter(p=>p.own.includes(me)),rot=M.rot.filter(p=>p.xi.includes(me)),hb=M.habit.find(x=>x.m.id===me.id),tr=M.tr.find(x=>x.m.id===me.id);
+  const pc=planSquad(me.id).map(p=>({p,c:pcOf(p.id)})).filter(x=>x.c&&x.c.when===0),left=g<=19?19-g+1:38-g+1;
+  const card=(ttl,body,tone='')=>`<div class="mec ${tone}"><h3>${ttl}</h3>${body}</div>`;
+  const chk=inj.length||rot.length?`<ul>${inj.map(p=>{const f=flagOf(p);return `<li><b>${nmb(p.name)}</b> <span class="dfn ${f.lvl}">${f.pct}% לשחק</span>${p.xi.includes(me)?'':' <small>(ספסל)</small>'}${p.news?`<small>${esc(newsHe(p.news))}</small>`:''}</li>`;}).join('')}${rot.map(p=>`<li><b>${nmb(p.name)}</b> <span class="dfn c">סיכון רוטציה</span><small>פתח ${Math.round(minRisk(p.id).pS*100)}% מהמשחקים האחרונים</small></li>`).join('')}</ul>`:'<p>כל ההרכב שלך כשיר. אין דגלים.</p>';
+  const cap=hb&&hb.best?`<p><b>${nmb(hb.best.p.name)}</b> עם ${hb.best.x.toFixed(1)} נק' צפויות, הכי גבוה בהרכב שלך.</p>${hb.fav?`<small>בדרך כלל אתה שם את ${nmb(hb.fav[0])} (${hb.fav[1]}/${md(me.id).d.length})${hb.inSq?'':', והוא כבר לא בסגל'}.</small>`:''}`:'<p>אין המלצה.</p>';
+  const mv=tr&&tr.c?`<div class="swp"><div class="so">${shirt(tr.o.team,tr.o.pos===1)}<span>${nmb(tr.o.name)}</span></div><span class="arr" aria-hidden="true">←</span><div class="si">${shirt(tr.c.team,tr.c.pos===1)}<span>${nmb(tr.c.name)}</span></div></div><small><b class="up2">${xf(Math.round(tr.gain*10)/10)}</b> נק' צפויות ב-${tr.H.length} המחזורים הקרובים, בתקציב שלך.</small>`:'<p>אין העברה שמשפרת משמעותית. אפשר לשמור את ההעברה לשבוע הבא.</p>';
+  const pr=pc.length?card('מחירים הלילה',`<ul>${pc.map(x=>`<li>${x.c.d>0?'<b class="pcu up">▲</b>':'<b class="pcu dn">▼</b>'} <b>${nmb(x.p.name)}</b> <small>${x.c.d>0?'צפוי לעלות':'צפוי לרדת'}${x.c.d<0&&tr&&tr.o&&tr.o.id===x.p.id?'. מתאים להעברה המומלצת: למכור לפני הירידה':''}</small></li>`).join('')}</ul>`):'';
+  const ch=chipsLeft(me.id,g);
+  return sec('pre-me',`שלך, ${esc(me.he)}`,`<p class="lede2">${esc(`מקום ${pos} בליגה, ${gap?`${gap} נקודות מהפסגה`:'בפסגה'}. הצפי שלך למחזור ${g}: ${xv.toFixed(1)} נקודות (מקום ${xr+1} מתוך ${M.xp.length} בליגה).`)}</p>
+   <div class="mecs">${card('לבדוק לפני הדדליין',chk,inj.length?'warn':'ok')}${card('הקפטן שלך',cap)}${card('ההעברה שלך',mv)}${pr}${card("צ'יפים",`<p>${esc(ch==='אין'?'לא נשארו צ\'יפים בחצי הזה.':`נשארו: ${ch}.`)}</p>${ch!=='אין'?`<small>${esc(`עוד ${left} מחזורים עד שהם פגים.`)}</small>`:''}`)}</div>
+   <p class="note"><a href="#coach-${me.slug}">לפלאנר שלך ←</a> · לא אתה? <button type="button" class="lnk" data-me="">להחליף</button></p>`);}
 /* standings at a glance (pre-deadline lead) */
 function miniTable(){const g=D.current,o=orderAt(g),t=m=>md(m.id).tot[g-1],top=t(o[0]),me=meGet();
   return `<div class="mst"><span>הטבלה אחרי מחזור ${g}</span><div>${o.map(m=>{const r=1+o.filter(x=>t(x)>t(m)).length,gap=t(m)-top;return `<a href="#coach-${m.slug}" class="${m.slug===me?'mine':''}"><i>${r}</i>${esc(m.he)} <small>${gap?`<bdi dir="ltr">−${Math.abs(gap)}</bdi>`:t(m)+" נק'"}</small></a>`;}).join('')}</div></div>`;}
@@ -2444,7 +2468,17 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
 (()=>{if(!standalone()||!('ontouchstart' in window))return;const P=$('ptr');let y0=null,dy=0;
   addEventListener('touchstart',e=>{y0=scrollY<=0&&!$('ov').classList.contains('on')&&!document.body.classList.contains('sheet')?e.touches[0].clientY:null;dy=0;},{passive:true});
   addEventListener('touchmove',e=>{if(y0==null)return;dy=Math.max(0,e.touches[0].clientY-y0);P.style.transform=`translate(-50%,${Math.min(dy,110)-50}px) rotate(${dy*3}deg)`;P.classList.toggle('go',dy>80);},{passive:true});
-  addEventListener('touchend',()=>{if(y0==null)return;if(dy>80){P.classList.add('spin');location.reload();}else P.style.transform='';y0=null;},{passive:true});})();
+  addEventListener('touchend',()=>{if(y0==null)return;if(dy>80){P.classList.add('spin');buzz(15);location.reload();}else P.style.transform='';y0=null;},{passive:true});})();
+/* swipe left/right on a gameweek page = the next / previous gameweek (RTL: the next one is to the left) */
+(()=>{if(!('ontouchstart' in window))return;let st=null;
+  const hscroll=el=>{for(let n=el;n&&n!==document.body;n=n.parentElement){if(n.scrollWidth>n.clientWidth+4){const ox=getComputedStyle(n).overflowX;if(ox==='auto'||ox==='scroll')return true;}if(n.matches&&n.matches('input,select,textarea,.pitch,.sheet,#ov'))return true;}return false;};
+  document.getElementById('view').addEventListener('touchstart',e=>{const t=e.touches[0];st=e.touches.length===1&&!$('gwnav').hidden&&t.clientX>24&&t.clientX<innerWidth-24&&!hscroll(e.target)?{x:t.clientX,y:t.clientY,t:Date.now()}:null;},{passive:true});
+  document.getElementById('view').addEventListener('touchend',e=>{if(!st)return;const t=e.changedTouches[0],dx=t.clientX-st.x,dy=t.clientY-st.y,dt=Date.now()-st.t;st=null;
+    if(Math.abs(dx)<80||Math.abs(dy)>Math.abs(dx)*0.5||dt>700)return;const b=$(dx>0?'next':'prev');if(!b||b.disabled)return;buzz(8);
+    const v=$('view');v.classList.remove('swl','swr');void v.offsetWidth;v.classList.add(dx>0?'swl':'swr');b.click();},{passive:true});})();
+/* a short tick on Android when something happens (iPhone browsers do not support vibration) */
+const buzz=(ms=10)=>{try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}};
+document.addEventListener('click',e=>{if(e.target.closest('.walink,[data-me],.isme,[data-recapply],[data-trtry],[data-txin],[data-txsw],[data-txact],[data-txchip],[data-txreset],[data-txu]'))buzz(10);},true);
 document.getElementById('tabbar').addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.getAttribute('aria-current')==='page'&&scrollY>40){e.preventDefault();scrollTo({top:0,behavior:'smooth'});}});
 const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=new Date(v);const w=isNaN(t)?v:D.builtAt?t.toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'}):t.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
   $('foot').textContent=`פסיכו פאנטזי · ליגת Psychopaths, ${D.managers.length} מאמנים · הנתונים מה-API הציבורי של Fantasy Premier League, מתעדכנים לבד · עודכן ${w}`;};
