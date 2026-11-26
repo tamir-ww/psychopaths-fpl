@@ -556,6 +556,14 @@ html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg butto
 .mec h3{font:800 14px Heebo,sans-serif;color:var(--soft);margin:0 0 6px}.mec p{margin:0 0 4px}.mec small{display:block;color:var(--soft);font-size:13px;line-height:1.4}.mec ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}.mec li small{display:block}.mec .swp{margin:4px 0 6px}
 #view.swl{animation:swl .25s ease-out}#view.swr{animation:swr .25s ease-out}@keyframes swl{from{transform:translateX(-24px);opacity:.4}}@keyframes swr{from{transform:translateX(24px);opacity:.4}}@media (prefers-reduced-motion:reduce){#view.swl,#view.swr{animation:none}}
 .mec .dfn{display:inline-block;font:800 12.5px Heebo,sans-serif;padding:1px 8px;border-radius:99px;background:light-dark(#eefaf3,#0c2a1a);vertical-align:1px}.mec .dfn.y,.mec .dfn.c{background:light-dark(#fff6d6,#2e2600);color:light-dark(#8a6d00,#ffd400)}.mec .dfn.r{background:light-dark(#fde7ef,#3a0b2a)}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.phint{font-size:13px;color:var(--soft);margin:8px 0 6px}.cplan .pmrow{margin:10px 0 4px}
+.cplan .pgt button{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:6px;padding:6px 4px}.cplan .pgt button b{font-size:17px}.cplan .pgt button small{flex-basis:100%;text-align:center}
+.cplan .pgtot{margin:4px 0 0;font-size:13px}.cplan .pgtot b{font-size:14px}
+.cplan{padding-top:14px!important}
+.rmini{display:flex;align-items:center;gap:8px;width:100%;margin:10px 0 0;padding:8px 12px;border-radius:12px;border:0;background:linear-gradient(115deg,#37003c,#5d0f63);color:#fff;font:600 14px Heebo,sans-serif;text-align:right;cursor:pointer}
+.rmini .rml{font-size:11.5px;font-weight:800;color:#04f5ff;white-space:nowrap}.rmini .rmt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rmini em{font-style:normal;color:#00ff85;font-weight:900;margin-inline-start:4px}.rmini .rmg{font-weight:900;color:#00ff85}
+.rmini.ok{background:var(--card);color:var(--soft)}.rmini.ok .rml{color:var(--soft)}
 </style>
 </head>
 <body class="shot">
@@ -617,7 +625,7 @@ function jumpify(){meMark();dekClamp();setTimeout(imgPrep,0);helloShow(helloForc
   nav.innerHTML=`<div class="in">${items.map((it,k)=>`<button type="button" data-jump="${k}">${esc(it.t)}</button>`).join('')}</div>`;lead.after(nav);
   nav.addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const t=items[+b.dataset.jump].x,y=t.getBoundingClientRect().top+scrollY-($('apphd')?$('apphd').offsetHeight:110)-8;scrollTo({top:y,behavior:'smooth'});});}
 function shotify(){const iss=$('issue').textContent.replace(/^פסיכו פאנטזי · /,'');
-  document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
+  document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.classList.contains('cplan')||sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
     sc.querySelectorAll('.note').forEach(n=>{if(n.textContent.length>170&&!n.closest('details')){const d=document.createElement('details');d.className='how';d.innerHTML='<summary>איך זה מחושב?</summary>';n.replaceWith(d);d.appendChild(n);}});
     const hd=document.createElement('div');hd.className='shothd';hd.innerHTML=`<b>פסיכו פאנטזי</b><span>${esc(iss)}</span>`;inn.prepend(hd);});}
 const applyTheme=()=>{const t=effTheme();if(rt.dataset.mode!==t)rt.dataset.mode=t;{const m=document.getElementById('thc');if(m)m.content=t==='dark'?'#16001a':'#ffffff';}$('th-light').setAttribute('aria-pressed',t==='light');$('th-dark').setAttribute('aria-pressed',t==='dark');if(drawRace)drawRace();};
@@ -1167,6 +1175,12 @@ function planMove0(id,g,base){const H=planGws().filter(x=>x>=g).slice(0,3),Cc=D.
     C.forEach(({c})=>{const q=sq.map(x=>x.id===o.id?{...c,slot:x.slot,mult:x.mult>0?1:0,cv:0}:x),v=score(q)-hit,b0=planBest(q,g);res.push({o,c,v,gain:v-base0,now:(b0?b0.v:0)-(planBest(sq,g)||{v:0}).v-hit});});});
   res.sort((a,b)=>b.gain-a.gain);const seen=new Set(),top=res.filter(r=>{const k=r.c.id;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,3);
   return {H,hit,top,base:base0,ft:ftv,used:T.list.length};}
+/* one line above the pitch: the best move right now; tap = the full recommendation */
+function recMini(id){const g=txXpGw();if(!g)return '';const sq=planSquadX(id),R0=planBest(sq);if(!R0)return '';const M=planMove(id,g);
+  const mv=M&&M.top[0]&&M.top[0].gain>=(M.hit?2:1)?M.top[0]:null,capNow=sq.find(p=>p.cv===1),capOk=capNow&&capNow.id===R0.cap.id;
+  const txt=mv?`<b>${nmb(mv.c.name)}</b> במקום <b>${nmb(mv.o.name)}</b> <em><bdi dir="ltr">+${(Math.round(mv.gain*10)/10).toFixed(1)}</bdi></em>`:!capOk?`קפטן מומלץ: <b>${nmb(R0.cap.name)}</b>`:'הסגל במצב טוב. אין שינוי ששווה את זה.';
+  return `<button type="button" class="rmini${mv||!capOk?'':' ok'}" data-rmini><span class="rml">${mv?'המהלך המומלץ':!capOk?'שינוי מומלץ':'המלצה'}</span><span class="rmt">${txt}</span>${mv||!capOk?'<span class="rmg" aria-hidden="true">←</span>':''}</button>`;}
+document.addEventListener('click',e=>{if(e.target.closest('[data-rmini]')){const r=$('recbox');if(r){const y=r.getBoundingClientRect().top+scrollY-($('apphd')?$('apphd').offsetHeight:100)-10;scrollTo({top:y,behavior:'smooth'});}}});
 function planRec(id){const g=txXpGw();if(!g)return '';const sq=planSquadX(id),R0=planBest(sq);if(!R0)return '';const M=planMove(id,g),T=txState(id);
   const capNow=sq.find(p=>p.cv===1),vcNow=sq.find(p=>p.cv===2),inI=new Set(R0.xi.map(p=>p.id)),toB=sq.filter(p=>p.mult>0&&!inI.has(p.id)),toX=R0.xi.filter(p=>p.mult===0);
   const lgain=R0.v-sq.filter(p=>p.mult>0).reduce((t,p)=>t+xpG(p,g)*(p.cv===1?2:1),0),lsame=!toB.length&&!toX.length&&capNow&&capNow.id===R0.cap.id&&vcNow&&vcNow.id===R0.vc.id;
@@ -1214,10 +1228,13 @@ function planSection(m){
   if(!hasPlan(m.id))return '';const G=fxGws(),C=D.planner.C[m.id],ng=D.next?D.next.gw:null,dm=G.includes(ng)?String(ng):(G[0]?String(G[0]):'mp');
   const modes=[['fx','משחקים'],['n5','5 הבאים'],['xp','צפי'],['mp',"נק' אצלו"],['form','כושר'],['cost','מחיר']],nT=txState(m.id).list.length;
   const ddl=D.next?dlStr(D.next.deadline):'';
-  return sec('c-plan',`הפלאנר של ${esc(m.he)}`,`<p class="lede2 plede">${esc(`לוחצים על שחקן כדי להחליף, לספסל או לשים קפטן. נשמר רק אצלך.${ddl?` דדליין: ${ddl}.`:''}`)}</p><div class="pgsel" id="pgsel">${pgSel(m.id)}</div>${D.players?`<div id="txbox">${txBar(m.id)}</div>`:''}<div id="recbox">${planRec(m.id)}</div>
-   <div class="pmrow"><span class="pml">מתחת לשחקן:</span><div class="pmode" role="group" aria-label="מה להציג מתחת לכל שחקן">${modes.map(([k,l])=>`<button type="button" data-pm="${k}" aria-pressed="${k==='fx'}">${esc(l)}</button>`).join('')}</div></div>
+  /* the team first: gameweek picker, the pitch, then the transfer bar and the recommendation */
+  return `<section class="band cplan" style="padding-top:0"><div class="in"><h2 class="sec sr" id="c-plan">הפלאנר של ${esc(m.he)}</h2><div class="pgsel" id="pgsel">${pgSel(m.id)}</div>
+   <div id="recmini">${recMini(m.id)}</div><p class="phint">${esc('לחצו על שחקן: החלפה, ספסל או קפטן.')}</p>
    <div class="pwrap"><div id="pitchbox">${planPitch(m.id,String(pgw()))}</div><div id="pdet" class="pdet"><p class="pdh0">בחרו שחקן במגרש.</p></div></div><div class="pback" id="pback" hidden></div>
-   <p class="note">הסגל וההרכב ממחזור ${D.planner.gw}, ועליהם הטיוטה שלך. העברות של מאמנים אחרים לא נראות עד הדדליין. "משחקים": היריבה במחזור שבחרתם, בצבע הקושי (H בית, A חוץ). "5 הבאים": פס צבעים לחמשת המחזורים הבאים, מימין לשמאל כמו בלוח. "צפי": הנקודות שהוא צפוי לעשות במחזור הקרוב.</p>`)
+   <div class="pmrow"><span class="pml">מתחת לשחקן:</span><div class="pmode" role="group" aria-label="מה להציג מתחת לכל שחקן">${modes.map(([k,l])=>`<button type="button" data-pm="${k}" aria-pressed="${k==='fx'}">${esc(l)}</button>`).join('')}</div></div>
+   ${D.players?`<div id="txbox">${txBar(m.id)}</div>`:''}<div id="recbox">${planRec(m.id)}</div>
+   <p class="note">הטיוטה נשמרת רק אצלך. הסגל וההרכב ממחזור ${D.planner.gw}, ועליהם הטיוטה שלך. העברות של מאמנים אחרים לא נראות עד הדדליין. "משחקים": היריבה במחזור שבחרתם, בצבע הקושי (H בית, A חוץ). "5 הבאים": פס צבעים לחמשת המחזורים הבאים, מימין לשמאל כמו בלוח. "צפי": הנקודות שהוא צפוי לעשות במחזור הקרוב.</p></div></section>`
    +rateSection(m)+chipSection(m);}
 function insSection(m){if(!hasPlan(m.id))return '';const I=planInsights(m.id);return sec('c-ins','מספרים מהסגל',`<div class="jabs">${I.map(x=>`<div class="jab"><span class="who">${esc(x[0])}</span><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join('')}</div>`);}
 function planWire(m){const box=$('pitchbox');if(!box)return;const det=$('pdet'),bk=$('pback'),id=m.id;let kind='fx';
@@ -1225,7 +1242,7 @@ function planWire(m){const box=$('pitchbox');if(!box)return;const det=$('pdet'),
   const close=()=>{det.classList.remove('open');bk.hidden=true;document.body.classList.remove('sheet');box.querySelectorAll('.pc.on').forEach(x=>x.classList.remove('on'));if(!mob())det.innerHTML=ph;};
   const open=html=>{det.innerHTML=html;if(mob()){det.classList.add('open');bk.hidden=false;document.body.classList.add('sheet');det.scrollTop=0;}};
   const toast=t=>{const e=document.createElement('div');e.className='ptoast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.classList.add('in'),10);setTimeout(()=>{e.classList.remove('in');setTimeout(()=>e.remove(),300);},1800);};
-  const redraw=()=>{const ps=$('pgsel');if(ps)ps.innerHTML=pgSel(id);const sel=box.querySelector('.pc.on');box.innerHTML=planPitch(id,mode());if(sel){const n=box.querySelector(`.pc[data-el="${sel.dataset.el}"]`);if(n)n.classList.add('on');}const tb=$('txbox');if(tb)tb.innerHTML=txBar(id);const rb=$('recbox');if(rb)rb.innerHTML=planRec(id);};
+  const redraw=()=>{const ps=$('pgsel');if(ps)ps.innerHTML=pgSel(id);const sel=box.querySelector('.pc.on');box.innerHTML=planPitch(id,mode());if(sel){const n=box.querySelector(`.pc[data-el="${sel.dataset.el}"]`);if(n)n.classList.add('on');}const tb=$('txbox');if(tb)tb.innerHTML=txBar(id);const rb=$('recbox');if(rb)rb.innerHTML=planRec(id);const rm=$('recmini');if(rm)rm.innerHTML=recMini(id);};
   const done=t=>{close();redraw();toast(t);};
   document.querySelector('.pmode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('.pmode button').forEach(x=>x.setAttribute('aria-pressed',x===b));kind=b.dataset.pm;redraw();});
   const pgs=$('pgsel');if(pgs)pgs.addEventListener('click',e=>{const b=e.target.closest('[data-pgw]');if(!b)return;PGW=+b.dataset.pgw;close();redraw();});
