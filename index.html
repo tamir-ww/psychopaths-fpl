@@ -383,6 +383,16 @@ a.team{color:inherit;text-decoration:none}a.team:hover{color:var(--red)}
 .cbar.hi .col i{background:var(--yel)}.cbar.lo .col i{background:var(--bad)}
 .cbar .col em{position:absolute;left:0;right:0;height:3px;background:var(--ink)}
 .coachnav{display:flex;gap:6px;margin:0 0 16px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.coachnav a{flex:none}
+.mst{margin:14px 0 2px}.mst>span{display:block;font-size:13px;font-weight:700;color:var(--soft);margin-bottom:6px}.mst div{display:flex;flex-wrap:wrap;gap:6px}
+.mst a{display:inline-flex;align-items:baseline;gap:6px;border:1px solid var(--hair);background:var(--card);border-radius:99px;padding:4px 11px;font-size:14px;font-weight:700;color:var(--ink);text-decoration:none}
+.mst a i{font-style:normal;color:var(--soft);font-size:12px}.mst a small{color:var(--soft);font-weight:600;font-size:12px}.mst a.mine{border-color:var(--yel);box-shadow:inset 0 0 0 1px var(--yel)}
+.hello{max-width:1080px;margin:18px auto 0;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--hair);position:relative;box-shadow:0 6px 20px rgba(55,0,60,.08)}
+.hello>b{display:block;font-size:20px;margin-inline-end:30px}.hello p{margin:6px 0 8px;color:var(--soft)}.hello ul{margin:0 0 12px;padding-inline-start:18px;display:grid;gap:4px}.hello li{line-height:1.45}
+.hello .x{position:absolute;top:8px;inset-inline-end:8px;width:34px;height:34px;border-radius:50%;border:0;background:transparent;color:var(--soft);font-size:22px;cursor:pointer}
+.hello .hme{display:grid;gap:6px;margin-bottom:12px}.hello .hme>span{font-size:14px;font-weight:700;color:var(--soft)}.hello .mepick{max-width:none}.hello .hact{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:700px){.hello{margin:10px 8px 0}}
+.steps{padding-inline-start:22px;display:grid;gap:8px;margin:10px 0 0}
+#ph-preview.live .dot{background:#e90052;animation:lvp 1.4s ease-in-out infinite}@keyframes lvp{50%{opacity:.25}}@media (prefers-reduced-motion:reduce){#ph-preview.live .dot{animation:none}}
 .coachnav a.mine::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--yel);margin-inline-start:6px;vertical-align:middle;box-shadow:0 0 0 1px rgba(55,0,60,.35)}
 tr.me>td:first-child{box-shadow:inset -4px 0 0 var(--yel)}
 .mepick{display:flex;flex-wrap:wrap;gap:6px;max-width:260px}.mepick button{font:inherit;font-size:14px;font-weight:700;border:1px solid var(--hair);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 11px;cursor:pointer}
@@ -542,7 +552,7 @@ details.how{margin-top:10px}details.how>summary{cursor:pointer;font-size:13px;fo
     <button type="button" id="ph-preview" data-ph="preview"><span class="dot"></span>תוך כדי</button>
     <button type="button" id="ph-final" data-ph="final"><span class="dot"></span>סיכום</button>
   </div>
-  <div class="menupop" id="menupop" hidden><span class="pl">מי אני? (לא חובה)</span><div class="mepick" id="mepick" role="group" aria-label="מי אני"></div><div class="melinks" id="melinks" hidden></div><button type="button" class="btn ghost" id="glsb">מילון מונחים</button><span class="pl">תצוגה</span><div class="seg theme" role="group" aria-label="מצב תצוגה"><button type="button" id="th-light" data-th="light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span class="t">בהיר</span></button><button type="button" id="th-dark" data-th="dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="t">כהה</span></button></div></div>
+  <div class="menupop" id="menupop" hidden><span class="pl">מי אני? (לא חובה)</span><div class="mepick" id="mepick" role="group" aria-label="מי אני"></div><div class="melinks" id="melinks" hidden></div><button type="button" class="btn ghost" id="glsb">מילון מונחים</button><button type="button" class="btn ghost inst" id="inst2">הוספה למסך הבית</button><button type="button" class="btn ghost" id="hello2">מה יש באתר?</button><span class="pl">תצוגה</span><div class="seg theme" role="group" aria-label="מצב תצוגה"><button type="button" id="th-light" data-th="light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span class="t">בהיר</span></button><button type="button" id="th-dark" data-th="dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="t">כהה</span></button></div></div>
   <span class="sr" id="issue"></span>
 </div></header>
 <main id="view"><section class="band"><div class="in"><p>טוען…</p></div></section></main>
@@ -574,7 +584,7 @@ let pref=null;try{const t=localStorage.getItem('pp-theme');if(t==='light'||t==='
 const sysDark=()=>matchMedia('(prefers-color-scheme: dark)').matches;
 const effTheme=()=>pref||(rt.dataset.theme==='dark'||rt.dataset.theme==='light'?rt.dataset.theme:(sysDark()?'dark':'light'));
 const SHOT=true;
-function jumpify(){meMark();const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
+function jumpify(){meMark();helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
   const secs=[...v.querySelectorAll(':scope>section.band')].filter(x=>!x.classList.contains('lead'));
   const items=secs.map(x=>{const h=x.querySelector('h2.sec');if(!h)return null;let t=h.textContent.trim().split(/[:,]/)[0].replace(/^ה(טבלה|מרוץ)/,'$&');if(t.length>22)t=t.slice(0,21)+'…';return {x,t};}).filter(Boolean);
   if(items.length<4)return;const lead=v.querySelector(':scope>section.band.lead');if(!lead)return;
@@ -754,7 +764,7 @@ function renderFinal(g){
   const rows=o.map((m,r)=>{const p=md(m.id).pts[i],mv=g>1?posAt(g-1,m.id)-(r+1):0;return `<tr><td class="pos">${tieLab(o,z=>md(z.id).tot[i],r)}${mv?`<span class="mv ${mv>0?'up':'dn'}">${mv>0?'▲':'▼'}${Math.abs(mv)}</span>`:''}</td><td><a class="team" href="#coach-${m.slug}"><span class="nkn">${esc(m.he)}</span>${m.team?`<span class="tmn">${esc(m.team)}</span>`:''}</a></td><td class="n"><span class="gw ${p==hi?'hi':p==lo?'lo':''}">${p}</span></td><td class="n tot">${md(m.id).tot[i]}</td><td class="n">${r?sg(-(lead-md(m.id).tot[i])):'–'}</td><td class="n" style="color:var(--soft)">${kr(md(m.id).orank[i])}</td></tr>`;}).join('');
   let h=`<section class="band lead"><div class="in"><h1>${esc(T('headline'))}</h1><p class="dek">${esc(T('dek'))}</p>
    <div class="tools"><button class="btn" type="button" data-act="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>הורד תמונה לוואטסאפ</button><button class="btn ghost" type="button" data-act="story">תמונה לסטורי</button><button class="btn ghost" type="button" data-act="wa">העתק כיתוב</button>${(()=>{const p=phaseOf(g);return p&&g===p[2]&&p[2]>p[1]?`<button class="btn ghost" type="button" data-act="month">תמונת ${esc(p[0])}</button>`:'';})()}</div>${posterCtl(g)}${g===D.current&&D.next&&hasPre(D.next.gw)?`<div class="tools" style="margin-top:-4px"><a class="btn ghost" href="#gw${D.next.gw}-pre">מחזור ${D.next.gw}: לפני הדדליין ←</a></div>`:''}<p class="status" id="st" role="status"></p>
-   <div class="front one"><div><h2 class="sec">הטבלה אחרי מחזור ${g}</h2><table><thead><tr><th>#</th><th>קבוצה</th><th class="n">מחזור</th><th class="n">סה״כ</th><th class="n">פער</th><th class="n">עולמי</th></tr></thead><tbody>${rows}</tbody></table><p class="note">ירוק: מלך המחזור. מג'נטה: תחתית המחזור. החצים: תזוזה מהמחזור הקודם.</p></div>
+   <div class="front one"><div><h2 class="sec">הטבלה אחרי מחזור ${g}</h2><table><thead><tr><th>#</th><th>מאמן</th><th class="n">מחזור</th><th class="n">סה״כ</th><th class="n">פער</th><th class="n">עולמי</th></tr></thead><tbody>${rows}</tbody></table><p class="note">ירוק: מלך המחזור. מג'נטה: תחתית המחזור. החצים: תזוזה מהמחזור הקודם.</p></div>
 </div></div></section>
    <section class="band" style="border-top:6px solid var(--rule)"><div class="in"><div class="kings">
    <div class="k king"><div class="lbl">מלך המחזור</div><div class="big"><b>${hi}</b><span>${esc(K.map(m=>m.he).join(', '))}</span></div><p>${esc(T('king'))}</p></div>
@@ -1350,7 +1360,7 @@ function renderPre(g){const M=preModel(g),ms=MG(),dl=D.next.deadline,c0=M.caps[0
   const head=`הדדליין ${dlFmt(dl)}`;
   const dek=`${preLeft()}. ${ni?`${ni} ${ni>1?'שחקנים בסגלים של הליגה בסימן שאלה':'שחקן בסגלים של הליגה בסימן שאלה'}${M.inj[0]?`, הבולט: ${M.inj[0].name} (${flagOf(M.inj[0]).pct}% לשחק, אצל ${M.inj[0].own.length})`:''}.`:'אין פצועים בסגלים של הליגה.'} הקפטן הכי חזק לפי התחזית: ${c0.name}. עם הסגלים של היום, ל${x0.m.he} התחזית הכי גבוהה ול${xl.m.he} הכי נמוכה.`;
   let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">לפני הדדליין · מחזור ${g}</p><h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
-   <div class="cdn"><b id="cdn">${esc(preLeft())}</b><span>${esc(new Date(dl).toLocaleString('he-IL',{weekday:'long',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}))}</span></div>
+   ${miniTable()}<div class="cdn"><b id="cdn">${esc(preLeft())}</b><span>${esc(new Date(dl).toLocaleString('he-IL',{weekday:'long',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}))}</span></div>
    <div class="tools"><button class="btn" type="button" data-act="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>הורד תמונה לוואטסאפ</button><button class="btn ghost" type="button" data-act="story">תמונה לסטורי</button><button class="btn ghost" type="button" data-act="wa">העתק כיתוב</button></div><p class="status" id="st" role="status"></p></div></section>`;
   /* injuries */
   h+=sec('pre-inj','חדר הטיפולים של הליגה',(M.inj.length?`<p class="lede2">${esc('שחקנים בסגלים של הליגה עם דגל פציעה, השעיה או ספק. כדאי לבדוק לפני הדדליין.')}</p><div class="dfs">${M.inj.map(p=>{const f=flagOf(p);return `<div class="dfc inj ${f.lvl}">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><span class="dfw">${esc(p.team)} · אצל ${esc(andJ(p.own.map(m=>m.he+(p.xi.includes(m)?'':' (ספסל)'))))}</span>${p.news?`<span class="dfw">${esc(newsHe(p.news))}</span>`:''}</div><div class="dfn ${f.lvl}">${f.pct}%<small>לשחק</small></div></div>`;}).join('')}</div>`:`<p class="lede2">אין אף שחקן עם דגל בסגלים של הליגה. נדיר.</p>`)+(M.rot.length?`<h3 class="kar" style="font-size:19px;margin:18px 0 6px">סיכון לדקות</h3><p class="note" style="margin-top:0">${esc('בלי דגל פציעה, אבל לא פותחים קבוע לאחרונה. לפי הדקות והפתיחות במשחקים האחרונים, מנתוני FPL.')}</p><div class="rotl">${M.rot.map(p=>{const r=minRisk(p.id);return `<div class="rotr">${shirt(p.team,p.pos===1)}<div><b>${nmb(p.name)}</b><small>${esc(`${p.team} · בהרכב של ${andJ(p.xi.map(m=>m.he))}`)}</small></div><span class="rotb m${r.lvl}">${esc(r.t)}<small>פתח ${Math.round(r.pS*100)}%</small></span></div>`;}).join('')}</div>`:''));
@@ -2345,6 +2355,29 @@ function meMenu(){const me=meGet(),p=$('mepick');if(!p||!D)return;
 function meMark(){const me=meGet();document.querySelectorAll('tr.me').forEach(r=>r.classList.remove('me'));document.querySelectorAll('.coachnav a.mine').forEach(a=>a.classList.remove('mine'));if(!me)return;
   document.querySelectorAll(`#view a.team[href="#coach-${me}"],#view a.team[href^="#coach-${me}/"]`).forEach(a=>{const r=a.closest('tr');if(r)r.classList.add('me');});
   document.querySelectorAll(`.coachnav a[href="#coach-${me}"],.coachnav a[href^="#coach-${me}/"]`).forEach(a=>a.classList.add('mine'));}
+/* standings at a glance (pre-deadline lead) */
+function miniTable(){const g=D.current,o=orderAt(g),t=m=>md(m.id).tot[g-1],top=t(o[0]),me=meGet();
+  return `<div class="mst"><span>הטבלה אחרי מחזור ${g}</span><div>${o.map(m=>{const r=1+o.filter(x=>t(x)>t(m)).length,gap=t(m)-top;return `<a href="#coach-${m.slug}" class="${m.slug===me?'mine':''}"><i>${r}</i>${esc(m.he)} <small>${gap?`<bdi dir="ltr">−${Math.abs(gap)}</bdi>`:t(m)+" נק'"}</small></a>`;}).join('')}</div></div>`;}
+/* add to the home screen */
+let bip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();bip=e;});
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function installHelp(){if(bip){bip.prompt();bip.userChoice.finally(()=>{bip=null;});return;}
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/android/i.test(navigator.userAgent);
+  overlay(`<h2 class="kar" style="font-size:24px;margin:0 0 10px">הוספה למסך הבית</h2><p>האתר נפתח כמו אפליקציה, עם אייקון משלו ובלי שורת הכתובת.</p><ol class="steps">${ios?'<li>פתחו את האתר בספארי.</li><li>לחצו על כפתור השיתוף (ריבוע עם חץ למעלה).</li><li>בחרו "הוספה למסך הבית" ואז "הוסף".</li>':and?'<li>פתחו את האתר בכרום.</li><li>לחצו על ⋮ למעלה.</li><li>בחרו "הוספה למסך הבית" או "התקנת אפליקציה".</li>':'<li>בכרום או באדג׳: לחצו על סמל ההתקנה בצד שורת הכתובת.</li><li>בספארי במק: קובץ ← "הוסף ל-Dock".</li>'}</ol>`);}
+/* first visit: what is here (dismissible, shown once) */
+const helloSeen=()=>{try{return localStorage.getItem('pp-hello')==='1';}catch(e){return true;}};
+function helloHtml(){const me=meGet();
+  return `<div class="hello" id="hello" role="region" aria-label="ברוכים הבאים"><button type="button" class="x" id="hellox" aria-label="סגירה">×</button><b>ברוכים הבאים לפסיכו פאנטזי</b>
+  <p>האתר של ליגת Psychopaths. הנתונים מתעדכנים לבד מ-FPL: כל חצי שעה בזמן משחקים ולפני הדדליין.</p>
+  <ul><li><b>מחזור</b>: לפני הדדליין, תוך כדי (עם לייב בזמן המשחקים) וסיכום. בכל עמוד יש תמונה מוכנה לווטסאפ.</li><li><b>פלאנר</b>: הסגל של כל מאמן, צפי נקודות, המלצות להעברות ולקפטן. מה שתנסו שם נשמר רק אצלכם.</li><li><b>עונה</b>: המרוץ, סיכויי אליפות, יריבויות והארכיון.</li></ul>
+  <div class="hme"><span>מי אתה? (לא חובה, אפשר לשנות בתפריט ⋯)</span><div class="mepick">${MG().map(m=>`<button type="button" data-me="${m.slug}" aria-pressed="${m.slug===me}">${esc(m.he)}</button>`).join('')}</div></div>
+  <div class="hact">${standalone()?'':'<button type="button" class="btn ghost inst">הוספה למסך הבית</button>'}<button type="button" class="btn" id="hellook">יאללה</button></div></div>`;}
+function helloShow(force){const old=$('hello');if(old)old.remove();if(!D||(!force&&helloSeen()))return;$('view').insertAdjacentHTML('afterbegin',helloHtml());}
+const helloClose=()=>{try{localStorage.setItem('pp-hello','1');}catch(e){}const h=$('hello');if(h)h.remove();};
+let helloForce=false;
+document.addEventListener('click',e=>{if(e.target.closest('#hellox,#hellook')){helloForce=false;helloClose();return;}
+  if(e.target.closest('.inst')){$('menupop').hidden=true;installHelp();return;}
+  if(e.target.closest('#hello2')){$('menupop').hidden=true;helloForce=true;helloShow(true);scrollTo({top:0,behavior:'smooth'});}});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-me]');if(b){meSet(b.dataset.me||null);meMenu();$('menupop').hidden=true;$('menub').setAttribute('aria-expanded','false');route();return;}
   const t=e.target.closest('.isme');if(t){meSet(t.getAttribute('aria-pressed')==='true'?null:t.dataset.slug);meMenu();route();}
   if(e.target.closest('#melinks a')){$('menupop').hidden=true;$('menub').setAttribute('aria-expanded','false');}});
@@ -2364,7 +2397,7 @@ const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=n
   $('foot').textContent=`פסיכו פאנטזי · ליגת Psychopaths, ${D.managers.length} מאמנים · הנתונים מה-API הציבורי של Fantasy Premier League, מתעדכנים לבד · עודכן ${w}`;};
 const gwOpts=()=>{$('gwsel').innerHTML=Array.from({length:maxGw()},(_,k)=>`<option value="${k+1}">מחזור ${k+1}</option>`).join('');};
 let loadedAt=0;
-loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();route();}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
+loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
 /* back to the app after a while (a phone tab, the home-screen app): if there is newer data, reload (the hash keeps the page, drafts are in localStorage) */
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'||!D||Date.now()-loadedAt<5*6e4)return;loadedAt=Date.now();
   loadData().then(d=>{if(!d||d.builtAt===D.builtAt)return;const busy=$('ov').classList.contains('on')||document.body.classList.contains('sheet')||document.querySelector('.open,input:focus,textarea:focus');if(busy)return;location.reload();}).catch(()=>{});});
