@@ -2404,52 +2404,67 @@ async function poster(fmt='feed',mode=''){
   return posterFPL(g,posterModel(g),ST);
 }
 /* ---------- league ownership (opening edition) ---------- */
-/* the in-gameweek WhatsApp image: one clean 4:5 card (1080×1350). Few things, big: captains, each coach's bet, the match that decides. */
+/* the in-gameweek WhatsApp image: one clean portrait card (1080 wide, about 2:3). Captains, each coach's differentials,
+   who moves nothing, the matches to watch, a little spice. Few colours, big type, the shirts carry the colour. */
 function posterOpeningCard(g){
   const Pv=D.gw[g].preview,E=eoModel(g);if(!E)return posterOpeningFPL(g,false);
-  const {HB}=FK,W=1080,H=1350,SC=2,cv=document.createElement('canvas');cv.width=W*SC;cv.height=H*SC;const x=cv.getContext('2d');x.scale(SC,SC);
-  const ink='#ffffff',soft='#c9b6d3',dim='#8f7a9a',GRN='#00ff85',GOLD='#ffd400',R0=W-60,L0=60,CW=W-120;
+  const ms=MG(),N=E.N,he=id=>(ms.find(m=>m.id===id)||{}).he,{HB}=FK,W=1080,SC=2,R0=W-60,L0=60,CW=W-120;
+  const ink='#ffffff',soft='#c9b6d3',dim='#8f7a9a',GRN='#00ff85',GOLD='#ffd400',PNK='#ff4d8d';
+  /* content */
+  const CP=E.caps.slice(0,5),BT=E.coach.map(c=>({m:c.m,ps:c.up.slice(0,3).map(z=>z.p)})),DEAD=E.dead.slice(0,5),ML=pvMatchList(g).slice(0,3);
+  const SP=[];const pr=Pv.pairs||{},s0=(pr.similar||[])[0],d0=(pr.different||[])[0];
+  const bench=E.pl.filter(p=>p.st.length>=Math.ceil(N*0.7)&&p.inSq.length>p.st.length).map(p=>({p,who:p.inSq.filter(m=>!(p.mult[m.id]>0))})).filter(z=>z.who.length===1)[0];
+  if(bench)SP.push(`${bench.who[0].he} השאיר את ${bench.p.name} על הספסל, כש-${bench.p.st.length} אחרים פותחים איתו`);
+  const noTr=ms.filter(m=>!(Pv.transfers||{})[m.id]);if(noTr.length===1)SP.push(`${noTr[0].he} היחיד שלא עשה אף חילוף`);
+  Object.entries(Pv.chips||{}).forEach(([id,c])=>SP.push(`${he(+id)} הפעיל ${CHIP[c]||c}`));
+  Object.entries(Pv.hits||{}).forEach(([id,h])=>SP.push(`${he(+id)} לקח מינוס ${h}`));
+  if(s0)SP.push(`הכי דומים: ${he(s0[0])} ו${he(s0[1])}, ${s0[2]} מתוך 11 פותחים זהים`);
+  if(d0)SP.push(`הכי שונים: ${he(d0[0])} ו${he(d0[1])}, רק ${d0[2]} משותפים`);
+  const SPX=SP.slice(0,3);
+  /* layout heights */
+  const hHead=210,hCap=60+190,hBet=64+BT.length*62,hDead=DEAD.length?132:0,hMt=ML.length?60+ML.length*62:0,hSp=SPX.length?60+SPX.length*42:0,gap=34;
+  const H=hHead+hCap+gap+hBet+gap+(hDead?hDead+gap:0)+(hMt?hMt+gap:0)+(hSp?hSp+gap:0)+20;
+  const cv=document.createElement('canvas');cv.width=W*SC;cv.height=H*SC;const x=cv.getContext('2d');x.scale(SC,SC);
   const t=(s,X,Y,f,c,al='right',dir='rtl')=>{x.direction=dir;x.font=f;x.fillStyle=c;x.textAlign=al;x.fillText(String(s),X,Y);x.direction='rtl';};
   const fit=(s,f,mw)=>{s=String(s);if(fkTw(s,f)<=mw)return s;while(s.length>2&&fkTw(s+'…',f)>mw)s=s.slice(0,-1);return s+'…';};
   const rr=(X,Y,w,h,r,fill)=>{x.beginPath();x.roundRect(X,Y,w,h,r);x.fillStyle=fill;x.fill();};
   const bg=x.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#2b0033');bg.addColorStop(1,'#13001a');x.fillStyle=bg;x.fillRect(0,0,W,H);
-  const gl=x.createRadialGradient(W*.8,60,0,W*.8,60,520);gl.addColorStop(0,'rgba(140,30,180,.45)');gl.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=gl;x.fillRect(0,0,W,H);
-  const sect=(s,Y)=>{t(s,R0,Y,`800 24px ${HB}`,soft);x.fillStyle='rgba(255,255,255,.12)';const w=fkTw(s,`800 24px ${HB}`);x.fillRect(L0,Y-9,CW-w-20,2);};
+  const gl=x.createRadialGradient(W*.8,60,0,W*.8,60,560);gl.addColorStop(0,'rgba(140,30,180,.45)');gl.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=gl;x.fillRect(0,0,W,H);
+  const sect=(s,Y,sub)=>{t(s,R0,Y,`900 30px ${HB}`,ink);const w=fkTw(s,`900 30px ${HB}`);if(sub){t(sub,R0-w-16,Y,`600 19px ${HB}`,dim);}};
+  const line=Y=>{x.fillStyle='rgba(255,255,255,.08)';x.fillRect(L0,Y,CW,1.5);};
   /* header */
-  fkLogo(x,L0+34,66,34);
-  t(`פסיכו פאנטזי · מחזור ${g}`,R0,64,`800 26px ${HB}`,GRN);
-  let hf=60;while(hf>44&&fkTw(Pv.headline,`900 ${hf}px ${HB}`)>CW)hf-=2;
-  const HL=fkLines(Pv.headline,`900 ${hf}px ${HB}`,CW,2);HL.forEach((ln,k)=>t(ln,R0,176+k*(hf+10),`900 ${hf}px ${HB}`,ink));
-  let y=176+(HL.length-1)*(hf+10)+76;
-  /* captains: a row of shirts */
-  sect('הקפטנים',y);y+=30;
-  const CP=E.caps.slice(0,5),cw=(CW-(CP.length-1)*16)/CP.length,ch=230;
-  CP.forEach((p,k)=>{const X=R0-(k+1)*cw-k*16,cx=X+cw/2,n=p.cap.length;rr(X,y,cw,ch,24,'rgba(255,255,255,.06)');
-    cvShirt(x,cx,y+66,86,p.team,p.pos===1);
-    t(fit(p.name,`900 26px ${HB}`,cw-20),cx,y+142,`900 26px ${HB}`,ink,'center','ltr');
-    if(n>1){t(`×${n}`,cx,y+186,`900 34px ${HB}`,GOLD,'center','ltr');}
-    else t(fit(p.cap[0].he,`800 24px ${HB}`,cw-20),cx,y+184,`800 24px ${HB}`,GOLD,'center');
-    if(n>1)t(fit(p.cap.map(m=>m.he).join(', '),`600 17px ${HB}`,cw-20),cx,y+214,`600 17px ${HB}`,dim,'center');});
-  y+=ch+56;
-  /* each coach's bet: the player that helps him most against the league */
-  sect('ההימור של כל אחד',y);y+=26;
-  const BT=E.coach.map(c=>({m:c.m,z:c.up[0]||null})),cols=2,gw=(CW-20)/cols,gh=92;
-  BT.forEach((b,k)=>{const col=k%cols,row=Math.floor(k/cols),X=R0-(col+1)*gw-col*20,Y=y+row*(gh+12);rr(X,Y,gw,gh,20,'rgba(255,255,255,.06)');
-    t(b.m.he,X+gw-22,Y+57,`900 30px ${HB}`,ink);
-    if(!b.z){t('הולך עם הליגה',X+24,Y+56,`700 22px ${HB}`,dim,'left');return;}
-    const own=b.z.p.st.length,tag=own===1?'רק אצלו':`אצל ${own}`;
-    cvShirt(x,X+gw*0.47,Y+gh/2,52,b.z.p.team,b.z.p.pos===1);
-    let nf=26;const nmw=gw*0.47-62;while(nf>18&&fkTw(b.z.p.name,`800 ${nf}px ${HB}`)>nmw)nf--;t(fit(b.z.p.name,`800 ${nf}px ${HB}`,nmw),X+gw*0.47-38,Y+46,`800 ${nf}px ${HB}`,ink,'right','ltr');
-    t(tag,X+gw*0.47-38,Y+74,`700 18px ${HB}`,own===1?GRN:soft);});
-  y+=Math.ceil(BT.length/cols)*(gh+12)+44;
-  /* the match that decides */
-  const M=pvMatchList(g)[0];
-  if(M&&y<H-170){sect('המשחק שיכריע',y);y+=30;const mh=Math.min(170,H-y-40);rr(L0,y,CW,mh,24,'rgba(255,255,255,.06)');
-    const cx=W/2,cy=y+64,fm=`900 40px ${HB}`,hw=fkTw(M.home,fm),aw=fkTw(M.away,fm);
-    t(M.home,cx+48,cy+14,fm,ink,'left','ltr');t(M.away,cx-48,cy+14,fm,ink,'right','ltr');t('נגד',cx,cy+10,`700 22px ${HB}`,dim,'center');
-    cvShirt(x,cx+48+hw+56,cy,76,M.home);cvShirt(x,cx-48-aw-56,cy,76,M.away);
-    const ln=[M.when,M.up.v>0.4?`הכי מרוויח: ${M.up.m.he}`:'',M.dn.v<-0.4?`הכי חשוף: ${M.dn.m.he}`:''].filter(Boolean).join('  ·  ');
-    t(fit(ln,`700 22px ${HB}`,CW-40),cx,y+mh-26,`700 22px ${HB}`,soft,'center');}
+  fkLogo(x,L0+34,66,34);t(`פסיכו פאנטזי · מחזור ${g}`,R0,64,`800 26px ${HB}`,GRN);
+  let hf=58;while(hf>40&&fkTw(Pv.headline,`900 ${hf}px ${HB}`)>CW)hf-=2;t(fit(Pv.headline,`900 ${hf}px ${HB}`,CW),R0,166,`900 ${hf}px ${HB}`,ink);
+  let y=hHead+20;
+  /* captains */
+  sect('הקפטנים',y);y+=24;
+  const cw=(CW-(CP.length-1)*14)/CP.length,ch=170;
+  CP.forEach((p,k)=>{const X=R0-(k+1)*cw-k*14,cx=X+cw/2,n=p.cap.length;rr(X,y,cw,ch,22,'rgba(255,255,255,.06)');cvShirt(x,cx,y+52,66,p.team,p.pos===1);
+    let nf=24;while(nf>17&&fkTw(p.name,`900 ${nf}px ${HB}`)>cw-16)nf--;t(fit(p.name,`900 ${nf}px ${HB}`,cw-16),cx,y+116,`900 ${nf}px ${HB}`,ink,'center','ltr');
+    t(fit(n>1?`×${n}`:p.cap[0].he,`900 24px ${HB}`,cw-16),cx,y+152,`900 24px ${HB}`,GOLD,'center',n>1?'ltr':'rtl');});
+  y+=ch+gap+30;
+  /* differentials */
+  sect('הדיפרנשיאלס',y,'פותחים אצלו ולא אצל רוב הליגה · בלבן: רק אצלו');y+=26;
+  BT.forEach((b,k)=>{const yy=y+k*62;if(k)line(yy);t(b.m.he,R0,yy+42,`900 27px ${HB}`,ink);
+    if(!b.ps.length){t('הולך עם הליגה',R0-170,yy+41,`600 22px ${HB}`,dim);return;}
+    let xx=R0-170;b.ps.forEach(p=>{const f=`800 23px ${HB}`,nw=Math.min(fkTw(p.name,f),190),w=nw+44;if(xx-w<L0)return;cvShirt(x,xx-14,yy+32,28,p.team,p.pos===1);t(fit(p.name,f,190),xx-34,yy+41,f,p.st.length===1?ink:soft,'right','ltr');xx-=w+26;});});
+  y+=BT.length*62+gap-8;
+  /* players everyone starts and nobody captains */
+  if(hDead){rr(L0,y,CW,hDead-20,22,'rgba(255,255,255,.05)');t('לא משפיעים על הליגה המחזור',R0-24,y+40,`800 23px ${HB}`,soft);t(`אצל כל ${N}, בלי קפטן`,L0+24,y+40,`600 18px ${HB}`,dim,'left');
+    let xx=R0-24;DEAD.forEach(p=>{const f=`800 22px ${HB}`,w=fkTw(p.name,f)+44;if(xx-w<L0+16)return;cvShirt(x,xx-14,y+80,28,p.team,p.pos===1);t(p.name,xx-34,y+89,f,dim,'right','ltr');xx-=w+26;});
+    y+=hDead+gap+10;}
+  /* matches to watch */
+  if(hMt){sect('משחקים לשים לב',y);y+=24;
+    ML.forEach((M,j)=>{const yy=y+j*62;if(j)line(yy);const f=`900 26px ${HB}`;
+      cvShirt(x,R0-16,yy+33,32,M.home);t(M.home,R0-40,yy+42,f,ink,'right','ltr');const hw=fkTw(M.home,f);t('נגד',R0-52-hw,yy+40,`600 18px ${HB}`,dim);const vw=fkTw('נגד',`600 18px ${HB}`);
+      t(M.away,R0-64-hw-vw,yy+42,f,ink,'right','ltr');const aw=fkTw(M.away,f);cvShirt(x,R0-88-hw-vw-aw,yy+33,32,M.away);
+      const ln=[M.up.v>0.4?`${M.up.m.he} הכי מרוויח`:'',M.when].filter(Boolean).join(' · ');t(fit(ln,`600 20px ${HB}`,CW-hw-aw-160),L0,yy+41,`600 20px ${HB}`,soft,'left');});
+    y+=ML.length*62+gap+22;}
+  /* a little spice */
+  if(hSp){sect('פיקנטריה',y);y+=20;
+    SPX.forEach((s2,k)=>{const yy=y+k*42;rr(R0-10,yy+16,10,10,5,PNK);t(fit(s2,`600 22px ${HB}`,CW-30),R0-24,yy+28,`600 22px ${HB}`,soft);});y+=SPX.length*42;}
+  /* trim the unused bottom */
+  const Hc=Math.min(H,Math.ceil(y+50));if(Hc<H){const c2=document.createElement('canvas');c2.width=W*SC;c2.height=Hc*SC;c2.getContext('2d').drawImage(cv,0,0);return new Promise(r=>c2.toBlob(r,'image/png'));}
   return new Promise(r=>cv.toBlob(r,'image/png'));
 }
 
