@@ -608,12 +608,16 @@ body.shot .shothd,.shothd{border-bottom:0;padding:0;margin:0 0 6px;font-size:12p
 .gwsp li button b{font-size:16px}.gwsp li button[aria-current=true]{background:var(--card);box-shadow:inset -4px 0 0 #1faa59}
 .gwl{font-size:13px;color:var(--soft)}.gwl.live{color:#e90052;font-weight:800}
 @media (prefers-reduced-motion:reduce){.gwsb,.gwsp{transition:none}}
+.blogo,.blogo[width]{width:auto!important;height:38px!important;border-radius:0!important;box-shadow:none!important;background:none!important;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(55,0,60,.25))}
+@media(max-width:700px){.blogo,.blogo[width]{height:36px!important}}
+.hhd img{width:auto;height:56px;border-radius:0;box-shadow:none;object-fit:contain}
+.splash img{width:auto;height:96px;border-radius:0;box-shadow:none;object-fit:contain}
 </style>
 </head>
 <body class="shot">
 <header class="app band" id="apphd"><div class="in">
   <div class="hrow">
-    <button type="button" class="ib hback" id="hback" aria-label="חזרה" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="brand" href="#" aria-label="פסיכו פאנטזי, לדף הבית"><img class="blogo" src="assets/logo.jpg" alt="" width="36" height="36"><span class="btx"><b>פסיכו פאנטזי</b><small>PSYCHOPATHS FPL</small></span></a>
+    <button type="button" class="ib hback" id="hback" aria-label="חזרה" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="brand" href="#" aria-label="פסיכו פאנטזי, לדף הבית"><img class="blogo" src="assets/mark.png" alt="" width="33" height="36"><span class="btx"><b>פסיכו פאנטזי</b><small>PSYCHOPATHS FPL</small></span></a>
     <div class="gwnav" id="gwnav">
     <button class="ib" id="prev" type="button" aria-label="המחזור הקודם"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
     <select id="gwsel" aria-label="בחירת מחזור"></select><button type="button" class="gwbtn" id="gwbtn" aria-haspopup="dialog" aria-label="בחירת מחזור"></button>
@@ -630,7 +634,7 @@ body.shot .shothd,.shothd{border-bottom:0;padding:0;margin:0 0 6px;font-size:12p
   <div class="menupop" id="menupop" hidden><span class="pl">מי אני? (לא חובה)</span><div class="mepick" id="mepick" role="group" aria-label="מי אני"></div><div class="melinks" id="melinks" hidden></div><button type="button" class="btn ghost" id="glsb">מילון מונחים</button><button type="button" class="btn ghost inst" id="inst2">הוספה למסך הבית</button><button type="button" class="btn ghost" id="hello2">מה יש באתר?</button><span class="pl">תצוגה</span><div class="seg theme" role="group" aria-label="מצב תצוגה"><button type="button" id="th-light" data-th="light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span class="t">בהיר</span></button><button type="button" id="th-dark" data-th="dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="t">כהה</span></button></div></div>
   <span class="sr" id="issue"></span>
 </div></header>
-<main id="view"><div class="splash"><img src="assets/logo.jpg" alt="" width="88" height="88"><b>פסיכו פאנטזי</b><span>טוען…</span></div></main><div class="offl" id="offl" hidden></div><div class="ptr" id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></div>
+<main id="view"><div class="splash"><img src="assets/mark.png" alt="" width="80" height="88"><b>פסיכו פאנטזי</b><span>טוען…</span></div></main><div class="offl" id="offl" hidden></div><div class="ptr" id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></div>
 
 <footer class="band"><div class="in" id="foot"></div></footer>
 <nav class="tabbar" id="tabbar" aria-label="ניווט ראשי">
@@ -2516,7 +2520,7 @@ function installHelp(){if(bip){bip.prompt();bip.userChoice.finally(()=>{bip=null
 /* first visit: what is here (dismissible, shown once) */
 const helloSeen=()=>{try{return localStorage.getItem('pp-hello')==='1';}catch(e){return true;}};
 function helloHtml(){const me=meGet();
-  return `<div class="hello" id="hello" role="region" aria-label="ברוכים הבאים"><button type="button" class="x" id="hellox" aria-label="סגירה">×</button><div class="hhd"><img src="assets/logo.jpg" alt="" width="56" height="56"><b>ברוכים הבאים לפסיכו פאנטזי</b></div>
+  return `<div class="hello" id="hello" role="region" aria-label="ברוכים הבאים"><button type="button" class="x" id="hellox" aria-label="סגירה">×</button><div class="hhd"><img src="assets/mark.png" alt="" width="51" height="56"><b>ברוכים הבאים לפסיכו פאנטזי</b></div>
   <p>האתר של ליגת Psychopaths. הנתונים מתעדכנים לבד מ-FPL: כל חצי שעה בזמן משחקים ולפני הדדליין.</p>
   <ul><li><b>מחזור</b>: לפני הדדליין, תוך כדי (עם לייב בזמן המשחקים) וסיכום. בכל עמוד יש תמונה מוכנה לווטסאפ.</li><li><b>פלאנר</b>: הסגל של כל מאמן, צפי נקודות, המלצות להעברות ולקפטן. מה שתנסו שם נשמר רק אצלכם.</li><li><b>עונה</b>: המרוץ, סיכויי אליפות, יריבויות והארכיון.</li></ul>
   <div class="hme"><span>מי אתה? (לא חובה, אפשר לשנות בתפריט ⋯)</span><div class="mepick">${MG().map(m=>`<button type="button" data-me="${m.slug}" aria-pressed="${m.slug===me}">${esc(m.he)}</button>`).join('')}</div></div>

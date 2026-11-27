@@ -1,7 +1,7 @@
 /* פסיכו פאנטזי: offline and instant start.
    Pages and data: network first (fresh when online), the last copy when offline.
    Images, icons and fonts: from the cache first. __BUILD__ is replaced at deploy. */
-const V = 'pp-__BUILD__', SHELL = ['./', 'index.html', 'manifest.webmanifest', 'assets/logo.jpg', 'assets/icon-192.png'];
+const V = 'pp-__BUILD__', SHELL = ['./', 'index.html', 'manifest.webmanifest', 'assets/logo.jpg', 'assets/mark.png', 'assets/icon-192.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 const fresh = async (req, key) => {
