@@ -2007,14 +2007,31 @@ const FK={P:'#37003c',P2:'#4b0a52',CY:'#04f5ff',GR:'#00ff85',PK:'#e90052',BG:'#f
 const fkMeasure=document.createElement('canvas').getContext('2d');
 const fkTw=(s,f)=>{fkMeasure.font=f;return fkMeasure.measureText(String(s)).width;};
 const fkLines=(s,f,mw,maxL)=>{const w=String(s).split(' '),L=[];let ln='';for(const k of w){const tt=ln?ln+' '+k:k;if(fkTw(tt,f)>mw&&ln){L.push(ln);ln=k;}else ln=tt;}if(ln)L.push(ln);if(L.length>maxL){L.length=maxL;let z=L[maxL-1];while(z.length>2&&fkTw(z+'…',f)>mw)z=z.slice(0,-1);L[maxL-1]=z+'…';}return L;};
+let FK_SPLIT=false;
+/* a feed image taller than about a phone screen and a half is sent as 2-3 images, cut between cards into similar heights; the full image stays the fallback */
+function fkSplit(cv,H,cuts){const toB=c=>new Promise(r=>c.toBlob(r,'image/png'));const split=FK_SPLIT;FK_SPLIT=false;const W=1080,SC=2,LIM=1900,FH=120,CH=92,NX=46,{P,P2,BG,WH,SOFT,HB}=FK,R0=W-56,L0=56;
+  if(!split||H<=LIM+200)return toB(cv);
+  const c=[...new Set(cuts)].sort((a,b)=>a-b).filter(v=>v>260&&v<H-FH-40).map(v=>v-14);if(!c.length)return toB(cv);
+  const n=Math.min(3,Math.ceil(H/LIM)),pick=[];let lo=0;
+  for(let k=1;k<n;k++){const tg=H*k/n;let best=null;c.forEach(v=>{if(v>lo+300&&(best==null||Math.abs(v-tg)<Math.abs(best-tg)))best=v;});if(best!=null&&!pick.includes(best)){pick.push(best);lo=best;}}
+  if(!pick.length)return toB(cv);
+  const B=[0,...pick,H-FH],parts=B.slice(1).map((b,i)=>[B[i],b]),N=parts.length;
+  return Promise.all(parts.map(([a,b],i)=>{const top=i?CH:0,last=i===N-1,h=top+(b-a)+(last?FH:NX),pc=document.createElement('canvas');pc.width=W*SC;pc.height=h*SC;const q=pc.getContext('2d');q.scale(SC,SC);q.fillStyle=BG;q.fillRect(0,0,W,h);
+    if(i){const gq=q.createLinearGradient(0,0,W,CH);gq.addColorStop(0,P);gq.addColorStop(1,P2);q.fillStyle=gq;q.fillRect(0,0,W,CH);q.direction='rtl';q.textAlign='right';q.font=`900 38px ${HB}`;q.fillStyle=WH;q.fillText('פסיכו פאנטזי',R0,58);fkLogo(q,L0+34,CH/2,30);
+      const pl=`המשך · ${i+1}/${N}`;q.font=`800 22px ${HB}`;const nw=fkTw('פסיכו פאנטזי',`900 38px ${HB}`),pw=fkTw(pl,`800 22px ${HB}`)+34;q.beginPath();q.roundRect(R0-nw-20-pw,28,pw,40,20);q.fillStyle=WH;q.fill();q.fillStyle=P;q.textAlign='center';q.fillText(pl,R0-nw-20-pw/2,55);}
+    q.drawImage(cv,0,a*SC,W*SC,(b-a)*SC,0,top,W,b-a);
+    if(last)q.drawImage(cv,0,(H-FH)*SC,W*SC,FH*SC,0,h-FH,W,FH);
+    else{q.direction='rtl';q.textAlign='center';q.font=`800 21px ${HB}`;q.fillStyle=SOFT;q.fillText(`המשך בתמונה הבאה (${i+2}/${N}) ←`,W/2,h-16);}
+    return toB(pc);})).then(ps2=>toB(cv).then(full=>{if(full)full.parts=ps2;return full;}));}
 function fkCanvas(H){
+  const cuts=[];
   const W=1080,SC=2,cv=document.createElement('canvas');cv.width=W*SC;cv.height=H*SC;const x=cv.getContext('2d');x.scale(SC,SC);
   const {P,P2,CY,GR,PK,BG,WH,SOFT,LINE,HB}=FK,R0=W-56,L0=56,CW=W-112;
   const t=(s,X,Y,f,col,al='right',dir='rtl')=>{x.direction=dir;x.font=f;x.fillStyle=col;x.textAlign=al;x.fillText(String(s),X,Y);x.direction='rtl';};
   const fit=(s,f,mw)=>{s=String(s);if(fkTw(s,f)<=mw)return s;while(s.length>2&&fkTw(s+'…',f)>mw)s=s.slice(0,-1);return s+'…';};
   const rr=(X,Y,w,h,r,fill)=>{x.beginPath();x.roundRect(X,Y,w,h,r);x.fillStyle=fill;x.fill();};
   const grad=(X1,Y1,X2,Y2,a,b)=>{const gg=x.createLinearGradient(X1,Y1,X2,Y2);gg.addColorStop(0,a);gg.addColorStop(1,b);return gg;};
-  const card=(X,Y,w,h,top)=>{x.shadowColor='rgba(55,0,60,.10)';x.shadowBlur=24;x.shadowOffsetY=6;rr(X,Y,w,h,22,WH);x.shadowColor='transparent';x.shadowBlur=0;x.shadowOffsetY=0;
+  const card=(X,Y,w,h,top)=>{cuts.push(Y);x.shadowColor='rgba(55,0,60,.10)';x.shadowBlur=24;x.shadowOffsetY=6;rr(X,Y,w,h,22,WH);x.shadowColor='transparent';x.shadowBlur=0;x.shadowOffsetY=0;
     if(top){x.fillStyle=top==='g'?grad(X,Y,X+w,Y,CY,GR):top==='b'?PK:P;x.beginPath();x.roundRect(X,Y,w,10,[22,22,0,0]);x.fill();}};
   const ball=(cx,cy,r,txt,tone,f)=>{x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fillStyle=tone==='g'?grad(cx-r,cy-r,cx+r,cy+r,CY,GR):tone==='b'?PK:FK.CHIP;x.fill();t(txt,cx,cy+r*0.36,f||`900 ${Math.round(r*0.95)}px ${HB}`,tone==='b'?WH:P,'center','ltr');};
   const pillN=(X,Y,txt,tone,f)=>{f=f||`900 40px ${HB}`;const bw=Math.max(92,fkTw(txt,f)+32);rr(X,Y,bw,64,32,tone==='g'?grad(X,Y,X+bw,Y+64,CY,GR):tone==='b'?PK:FK.CHIP);t(txt,X+bw/2,Y+46,f,tone==='b'?WH:P,'center','ltr');return bw;};
@@ -2033,7 +2050,8 @@ function fkCanvas(H){
       if(f.p)t(fit(f.p,`800 19px ${HB}`,sw-48),tx,cy+120+TL.length*26,`800 19px ${HB}`,P);});return Math.ceil(SP.length/cols)*(sh+16)-16;};
   const spiceH=n=>Math.ceil(n/2)*(196+16)-16;
   const title=(s,y,col)=>t(s,R0,y+40,`900 34px ${HB}`,col||P);
-  return {cv,x,W,H,R0,L0,CW,t,fit,rr,grad,card,ball,pillN,header,headerH,footer,spice,spiceH,title,done:()=>new Promise(r=>cv.toBlob(r,'image/png'))};
+  const done=()=>fkSplit(cv,H,cuts);
+  return {cv,x,W,H,R0,L0,CW,t,fit,rr,grad,card,ball,pillN,header,headerH,footer,spice,spiceH,title,done};
 }
 const FK_FOOT=()=>D.next?`מחזור ${D.next.gw}: הדדליין ${dlStr(D.next.deadline)}`:'פסיכו פאנטזי';
 
@@ -2274,7 +2292,7 @@ function posterLiveFPL(g,ST){
 
 function posterFPL(g,Md,ST){
   const W=1080,SC=2,P='#37003c',P2='#4b0a52',CY='#04f5ff',GR='#00ff85',PK='#e90052',BG='#f3eef6',WH='#ffffff',SOFT='#76677c',LINE='#ece4f0',HB='Heebo, Arial, sans-serif';
-  const c0=document.createElement('canvas').getContext('2d');
+  const c0=document.createElement('canvas').getContext('2d');const CUTS=[];
   const tw=(s,f)=>{c0.font=f;return c0.measureText(String(s)).width;};
   const lines=(s,f,mw,maxL)=>{const w=String(s).split(' '),L=[];let ln='';for(const k of w){const tt=ln?ln+' '+k:k;if(tw(tt,f)>mw&&ln){L.push(ln);ln=k;}else ln=tt;}if(ln)L.push(ln);if(L.length>maxL){L.length=maxL;let z=L[maxL-1];while(z.length>2&&tw(z+'…',f)>mw)z=z.slice(0,-1);L[maxL-1]=z+'…';}return L;};
   const R0=W-56,L0=56,CW=W-112;
@@ -2303,7 +2321,7 @@ function posterFPL(g,Md,ST){
   const rr=(X,Y,w,h,r,fill)=>{x.beginPath();x.roundRect(X,Y,w,h,r);x.fillStyle=fill;x.fill();};
   const grad=(X1,Y1,X2,Y2,a,b)=>{const gg=x.createLinearGradient(X1,Y1,X2,Y2);gg.addColorStop(0,a);gg.addColorStop(1,b);return gg;};
   const shadow=on=>{x.shadowColor=on?'rgba(55,0,60,.10)':'transparent';x.shadowBlur=on?24:0;x.shadowOffsetY=on?6:0;};
-  const card=(X,Y,w,h)=>{shadow(true);rr(X,Y,w,h,22,WH);shadow(false);};
+  const card=(X,Y,w,h)=>{CUTS.push(Y);shadow(true);rr(X,Y,w,h,22,WH);shadow(false);};
   /* background */
   x.fillStyle=BG;x.fillRect(0,0,W,H);
   /* header */
@@ -2370,12 +2388,12 @@ function posterFPL(g,Md,ST){
   {const fy=H-fH;x.fillStyle=P;x.fillRect(0,fy,W,fH);x.fillStyle=grad(0,fy,W,fy,CY,GR);x.fillRect(0,fy,W,6);
     if(Md.next){t(`מחזור ${Md.next.gw}: הדדליין ${Md.next.dl}`,R0,fy+52,`800 24px ${HB}`,WH);if(Md.next.dang)t(fit(`בסכנת תחתית: ${Md.next.dang.m.he} (${pct(Md.next.dang.l)}) · צ'יפים שנשארו לו: ${chipsLeft(Md.next.dang.m.id,g)}`,`600 19px ${HB}`,CW),R0,fy+88,`600 19px ${HB}`,'#e3d3e8');}
     else t('פסיכו פאנטזי',R0,fy+64,`800 24px ${HB}`,WH);}
-  return new Promise(r=>cv.toBlob(r,'image/png'));
+  return fkSplit(cv,H,CUTS);
 }
 
 async function poster(fmt='feed',mode=''){
   try{await Promise.all(['500 20px Heebo','700 20px Heebo','800 20px Heebo','900 20px Heebo'].map(f=>document.fonts.load(f,'אבגדהוזחטיכלמנסעפצקרשת 0123456789 Abc')));await document.fonts.ready;}catch(e){}
-  const ST=fmt==='story';
+  const ST=fmt==='story';FK_SPLIT=!ST;
   const g=S.gw;
   if(mode==='live')return posterLiveFPL(g,ST);
   if(S.ph==='pre'&&!mode)return posterPreFPL(g,ST);
@@ -2587,17 +2605,17 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   if(b.dataset.act==='wa'){const txt=captionText();try{await navigator.clipboard.writeText(txt);st.textContent='הכיתוב הועתק. מדביקים מתחת לתמונה בקבוצה.';}catch(err){overlay(`<p>ההעתקה האוטומטית נחסמה. סמנו והעתיקו:</p><textarea readonly>${esc(txt)}</textarea>`);}}
   let ACT=b.dataset.act;
   if(ACT==='wa1'){const rec=IMGP&&IMGP.k===imgKey()&&IMGP.blob?IMGP:null;
-    if(rec){const fn=imgName('feed',''),file=typeof File!=='undefined'?new File([rec.blob],fn,{type:'image/png'}):null,cap=captionText();
-      if(file&&navigator.canShare&&navigator.canShare({files:[file]})){try{navigator.clipboard&&navigator.clipboard.writeText(cap).catch(()=>{});}catch(e){}
-        try{await navigator.share({files:[file],text:cap});if(st)st.textContent='';}catch(err){if(err&&err.name!=='AbortError'&&st)st.textContent='השיתוף לא נפתח. נסו שוב.';}return;}
-      const a=document.createElement('a');a.href=URL.createObjectURL(rec.blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();
-      try{await navigator.clipboard.writeText(cap);if(st)st.textContent='התמונה ירדה והכיתוב הועתק. מדביקים בקבוצה.';}catch(e){if(st)st.textContent='התמונה ירדה.';}return;}
+    if(rec){const fn=imgName('feed',''),BL=rec.blob.parts||[rec.blob],FL=typeof File!=='undefined'?BL.map((b,i)=>new File([b],BL.length>1?fn.replace('.png',`-${i+1}.png`):fn,{type:'image/png'})):null,cap=captionText();
+      if(FL&&navigator.canShare&&navigator.canShare({files:FL})){try{navigator.clipboard&&navigator.clipboard.writeText(cap).catch(()=>{});}catch(e){}
+        try{await navigator.share({files:FL,text:cap});if(st)st.textContent='';}catch(err){if(err&&err.name!=='AbortError'&&st)st.textContent='השיתוף לא נפתח. נסו שוב.';}return;}
+      BL.forEach((b,i)=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=BL.length>1?fn.replace('.png',`-${i+1}.png`):fn;document.body.appendChild(a);setTimeout(()=>{a.click();a.remove();},i*400);});
+      try{await navigator.clipboard.writeText(cap);if(st)st.textContent=BL.length>1?`${BL.length} תמונות ירדו והכיתוב הועתק. שולחים אותן יחד.`:'התמונה ירדה והכיתוב הועתק. מדביקים בקבוצה.';}catch(e){if(st)st.textContent='התמונה ירדה.';}return;}
     ACT='img';}
   const MODE={month:'month',hall:'hall',card:'card',cardstory:'card',liveimg:'live'}[ACT]||'';if(['img','story','month','hall','card','cardstory','liveimg'].includes(ACT)){const mo=MODE==='month',fm=(ACT==='story'||ACT==='cardstory')?'story':'feed';if(!st){overlay('<p>מכין…</p>');}else st.textContent='מכין את התמונה…';const blob=await poster(fm,MODE);if(!blob){st.textContent='לא הצלחתי להכין תמונה.';return;}
     const fn=MODE==='hall'?`psychopaths-hall-gw${D.current}.png`:MODE==='card'?`psychopaths-card-${(MG().find(z=>z.id===S.coachId)||{}).slug}${fm==='story'?'-story':''}.png`:mo?`psychopaths-month-gw${S.gw}.png`:`psychopaths-gw${S.gw}-${MODE==='live'?'live':S.ph==='final'?'final':S.ph==='pre'?'deadline':'opening'}${fm==='story'?'-story':''}.png`,u=URL.createObjectURL(blob);st.textContent='';
-    const file=typeof File!=='undefined'?new File([blob],fn,{type:'image/png'}):null,canSh=!!(file&&navigator.canShare&&navigator.canShare({files:[file]}));
-    overlay(`<img src="${u}" alt="תמונת הסיכום של מחזור ${S.gw}">${canSh?'<button class="btn" type="button" id="ovshare">שתף לווטסאפ</button>':''}<a class="btn ${canSh?'ghost':''}" id="ovsave" href="${u}" download="${fn}">שמור את התמונה</a>${!MODE&&fm==='feed'?'<button class="btn ghost" type="button" data-act="story">גרסה לסטורי</button>':''}<p class="note" id="ovmsg">${isTouch?'אפשר גם לחיצה ארוכה על התמונה ושמירה.':''}</p>`);
-    const sh=$('ovshare');if(sh)sh.onclick=async()=>{try{await navigator.share({files:[file],text:captionText()});$('ovmsg').textContent='נשלח.';}catch(err){if(err&&err.name!=='AbortError')$('ovmsg').textContent='השיתוף לא עבד כאן. לחיצה ארוכה על התמונה ושמירה.';}};
+    const BL=blob.parts||[blob],US=BL.map(b=>BL.length>1?URL.createObjectURL(b):u),FN=BL.map((b,i)=>BL.length>1?fn.replace('.png',`-${i+1}.png`):fn),FL=typeof File!=='undefined'?BL.map((b,i)=>new File([b],FN[i],{type:'image/png'})):null,file=FL&&FL[0],canSh=!!(FL&&navigator.canShare&&navigator.canShare({files:FL}));
+    overlay(`${US.map((x,i)=>`<img src="${x}" alt="תמונת מחזור ${S.gw}${BL.length>1?`, חלק ${i+1} מתוך ${BL.length}`:''}">`).join('')}${canSh?`<button class="btn" type="button" id="ovshare">${BL.length>1?`שתף ${BL.length} תמונות לווטסאפ`:'שתף לווטסאפ'}</button>`:''}${US.map((x,i)=>`<a class="btn ${canSh||i?'ghost':''}"${i?'':' id="ovsave"'} href="${x}" download="${FN[i]}">${BL.length>1?`שמור תמונה ${i+1}`:'שמור את התמונה'}</a>`).join('')}${!MODE&&fm==='feed'?'<button class="btn ghost" type="button" data-act="story">גרסה לסטורי</button>':''}<p class="note" id="ovmsg">${isTouch?'אפשר גם לחיצה ארוכה על התמונה ושמירה.':''}</p>`);
+    const sh=$('ovshare');if(sh)sh.onclick=async()=>{try{await navigator.share({files:FL,text:captionText()});$('ovmsg').textContent='נשלח.';}catch(err){if(err&&err.name!=='AbortError')$('ovmsg').textContent='השיתוף לא עבד כאן. לחיצה ארוכה על התמונה ושמירה.';}};
     const sv=$('ovsave');if(sv)sv.onclick=()=>{setTimeout(()=>{$('ovmsg').textContent='נשמר בהורדות. אפשר לשלוח בקבוצה.';},400);};}
 });
 
