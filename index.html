@@ -612,6 +612,11 @@ body.shot .shothd,.shothd{border-bottom:0;padding:0;margin:0 0 6px;font-size:12p
 @media(max-width:700px){.blogo,.blogo[width]{height:36px!important}}
 .hhd img{width:auto;height:56px;border-radius:0;box-shadow:none;object-fit:contain}
 .splash img{width:auto;height:96px;border-radius:0;box-shadow:none;object-fit:contain}
+.instbar{position:fixed;inset-inline:10px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:45;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 10px;border-radius:14px;background:var(--ink);color:var(--bg);box-shadow:0 8px 24px rgba(22,0,26,.3);font:700 13.5px Heebo,sans-serif;transform:translateY(20px);opacity:0;transition:transform .25s,opacity .25s}
+.instbar.on{transform:none;opacity:1}.instbar img{width:auto;height:22px;flex:none}.instbar span{flex:1;min-width:0}
+.instbar .ib2{font:800 13.5px Heebo,sans-serif;border:0;border-radius:99px;padding:6px 14px;background:#1faa59;color:#fff;cursor:pointer;flex:none}
+.instbar .ibx{border:0;background:transparent;color:inherit;opacity:.7;font-size:20px;width:30px;height:30px;cursor:pointer;flex:none}
+@media (prefers-reduced-motion:reduce){.instbar{transition:none}}
 </style>
 </head>
 <body class="shot">
@@ -2533,6 +2538,13 @@ const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator
 function installHelp(){if(bip){bip.prompt();bip.userChoice.finally(()=>{bip=null;});return;}
   const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/android/i.test(navigator.userAgent);
   overlay(`<h2 class="kar" style="font-size:24px;margin:0 0 10px">הוספה למסך הבית</h2><p>האתר נפתח כמו אפליקציה, עם אייקון משלו ובלי שורת הכתובת.</p><ol class="steps">${ios?'<li>פתחו את האתר בספארי.</li><li>לחצו על כפתור השיתוף (ריבוע עם חץ למעלה).</li><li>בחרו "הוספה למסך הבית" ואז "הוסף".</li>':and?'<li>פתחו את האתר בכרום.</li><li>לחצו על ⋮ למעלה.</li><li>בחרו "הוספה למסך הבית" או "התקנת אפליקציה".</li>':'<li>בכרום או באדג׳: לחצו על סמל ההתקנה בצד שורת הכתובת.</li><li>בספארי במק: קובץ ← "הוסף ל-Dock".</li>'}</ol>`);}
+/* a small "install as an app" bar on phones (not when already installed; × hides it for 30 days) */
+function instBar(){if(standalone()||innerWidth>700||$('instbar'))return;let x=0;try{x=+localStorage.getItem('pp-inst-x')||0;}catch(e){}if(Date.now()-x<30*864e5)return;
+  const b=document.createElement('div');b.id='instbar';b.className='instbar';b.setAttribute('role','region');b.setAttribute('aria-label','התקנה כאפליקציה');
+  b.innerHTML='<img src="assets/mark.png" alt="" width="20" height="22"><span>להוסיף כאפליקציה בטלפון</span><button type="button" class="ib2 inst">הוספה</button><button type="button" class="ibx" aria-label="לא עכשיו">×</button>';
+  document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));
+  b.querySelector('.ibx').onclick=()=>{try{localStorage.setItem('pp-inst-x',String(Date.now()));}catch(e){}b.remove();};}
+addEventListener('appinstalled',()=>{const b=$('instbar');if(b)b.remove();});
 /* first visit: what is here (dismissible, shown once) */
 const helloSeen=()=>{try{return localStorage.getItem('pp-hello')==='1';}catch(e){return true;}};
 function helloHtml(){const me=meGet();
@@ -2545,7 +2557,7 @@ function helloShow(force){const old=$('hello');if(old)old.remove();if(!D||(!forc
 const helloClose=()=>{try{localStorage.setItem('pp-hello','1');}catch(e){}const h=$('hello');if(h)h.remove();};
 let helloForce=false;
 document.addEventListener('click',e=>{if(e.target.closest('#hellox,#hellook')){helloForce=false;helloClose();return;}
-  if(e.target.closest('.inst')){$('menupop').hidden=true;installHelp();return;}
+  if(e.target.closest('.inst')){$('menupop').hidden=true;installHelp();const ib=$('instbar');if(ib&&e.target.closest('#instbar')){try{localStorage.setItem('pp-inst-x',String(Date.now()));}catch(err){}ib.remove();}return;}
   if(e.target.closest('#hello2')){$('menupop').hidden=true;helloForce=true;helloShow(true);scrollTo({top:0,behavior:'smooth'});}});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-me]');if(b){meSet(b.dataset.me||null);meMenu();$('menupop').hidden=true;$('menub').setAttribute('aria-expanded','false');route();return;}
   const t=e.target.closest('.isme');if(t){meSet(t.getAttribute('aria-pressed')==='true'?null:t.dataset.slug);meMenu();route();}
@@ -2586,7 +2598,7 @@ const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=n
   $('foot').textContent=`ליגת Psychopaths · ${D.managers.length} מאמנים · הנתונים מ-FPL, מתעדכנים לבד · עודכן ${w}`;};
 const gwOpts=()=>{$('gwsel').innerHTML=Array.from({length:maxGw()},(_,k)=>`<option value="${k+1}">מחזור ${k+1}</option>`).join('');};
 let loadedAt=0;
-loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
+loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();setTimeout(instBar,2500);}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
 /* back to the app after a while (a phone tab, the home-screen app): if there is newer data, reload (the hash keeps the page, drafts are in localStorage) */
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'||!D||Date.now()-loadedAt<5*6e4)return;loadedAt=Date.now();
   loadData().then(d=>{if(!d||d.builtAt===D.builtAt)return;const busy=$('ov').classList.contains('on')||document.body.classList.contains('sheet')||document.querySelector('.open,input:focus,textarea:focus');if(busy)return;location.reload();}).catch(()=>{});});
