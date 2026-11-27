@@ -589,6 +589,9 @@ html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg butto
 .capc{display:inline-flex;align-items:baseline;gap:5px;padding:4px 10px;border-radius:99px;background:linear-gradient(115deg,#37003c,#5d0f63);color:#fff;font-size:13.5px}.capc em{font-style:normal;color:#00ff85;font-weight:900}.capc.solo{background:light-dark(#fde7ef,#3a0b2a);color:var(--ink)}
 .dead{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.dch{display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 8px;border-radius:12px;background:var(--card);opacity:.75}.dch .shirt{width:22px;height:22px}.dch b{font-size:14px}.dch small{font-size:11.5px;color:var(--soft)}
 @media(max-width:700px){.mtc{padding:10px 12px}.mtt{margin:4px 0 0;gap:8px}.mtt>div{flex-direction:row;gap:6px}.mtt .shirt{width:34px;height:32px}.mtt b{font-size:17px}.mtt small{display:none}.mtw{margin:2px 0 6px;font-size:12px}.mtx{font-size:13px}}
+@media(max-width:700px){[role=tab]{font-size:14px;min-height:38px;padding:0 13px}.tabsec h2.sec{font-size:22px}}
+body.shot .shothd,.shothd{border-bottom:0;padding:0;margin:0 0 6px;font-size:12px}
+.tabsec>.in{padding-top:8px}
 </style>
 </head>
 <body class="shot">
@@ -650,9 +653,9 @@ function jumpify(){meMark();dekClamp();setTimeout(imgPrep,0);helloShow(helloForc
   nav.innerHTML=`<div class="in">${items.map((it,k)=>`<button type="button" data-jump="${k}">${esc(it.t)}</button>`).join('')}</div>`;lead.after(nav);
   nav.addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(!b)return;const t=items[+b.dataset.jump].x,y=t.getBoundingClientRect().top+scrollY-($('apphd')?$('apphd').offsetHeight:110)-8;scrollTo({top:y,behavior:'smooth'});});}
 function shotify(){const iss=$('issue').textContent.replace(/^פסיכו פאנטזי · /,'');
-  document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.classList.contains('cplan')||sc.classList.contains('lead')||sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
+  document.querySelectorAll('#view>section.band').forEach(sc=>{if(sc.classList.contains('cplan')||sc.classList.contains('lead')||sc.classList.contains('tabsec')||sc.querySelector(':scope>.in>.shothd'))return;const inn=sc.querySelector(':scope>.in');if(!inn)return;
     sc.querySelectorAll('.note').forEach(n=>{if(n.textContent.length>170&&!n.closest('details')){const d=document.createElement('details');d.className='how';d.innerHTML='<summary>איך זה מחושב?</summary>';n.replaceWith(d);d.appendChild(n);}});
-    const hd=document.createElement('div');hd.className='shothd';hd.innerHTML=`<span>${esc(iss)}</span><img src="assets/logo.jpg" alt="פסיכו פאנטזי" width="18" height="18">`;inn.prepend(hd);});}
+    const hd=document.createElement('div');hd.className='shothd';hd.innerHTML=`<span>${esc(iss)}</span>`;inn.prepend(hd);});}
 const applyTheme=()=>{const t=effTheme();if(rt.dataset.mode!==t)rt.dataset.mode=t;{const m=document.getElementById('thc');if(m)m.content=t==='dark'?'#16001a':'#ffffff';}$('th-light').setAttribute('aria-pressed',t==='light');$('th-dark').setAttribute('aria-pressed',t==='dark');if(drawRace)drawRace();};
 const setHd=()=>{const h=$('apphd');if(h)document.documentElement.style.setProperty('--hdh',h.offsetHeight+'px');};addEventListener('resize',setHd);setTimeout(setHd,50);new ResizeObserver(setHd).observe(document.getElementById('apphd'));
 applyTheme();
@@ -2533,7 +2536,7 @@ const buzz=(ms=10)=>{try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
 document.addEventListener('click',e=>{if(e.target.closest('.walink,[data-me],.isme,[data-recapply],[data-trtry],[data-txin],[data-txsw],[data-txact],[data-txchip],[data-txreset],[data-txu]'))buzz(10);},true);
 document.getElementById('tabbar').addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.getAttribute('aria-current')==='page'&&scrollY>40){e.preventDefault();scrollTo({top:0,behavior:'smooth'});}});
 const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=new Date(v);const w=isNaN(t)?v:D.builtAt?t.toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'}):t.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
-  $('foot').textContent=`ליגת Psychopaths · ${D.managers.length} מאמנים · הנתונים מ-Fantasy Premier League, מתעדכנים לבד · עודכן ${w}`;};
+  $('foot').textContent=`ליגת Psychopaths · ${D.managers.length} מאמנים · הנתונים מ-FPL, מתעדכנים לבד · עודכן ${w}`;};
 const gwOpts=()=>{$('gwsel').innerHTML=Array.from({length:maxGw()},(_,k)=>`<option value="${k+1}">מחזור ${k+1}</option>`).join('');};
 let loadedAt=0;
 loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
