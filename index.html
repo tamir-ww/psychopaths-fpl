@@ -863,6 +863,7 @@ function renderFinal(g){
    <div class="k king"><div class="lbl">מלך המחזור</div><div class="big"><b>${hi}</b><span>${esc(K.map(m=>m.he).join(', '))}</span></div><p>${esc(T('king'))}</p></div>
    <div class="k flop"><div class="lbl">תחתית המחזור</div><div class="big"><b>${lo}</b><span>${esc(F.map(m=>m.he).join(', '))}</span></div><p>${esc(T('flop'))}</p></div></div>
    <div class="facts"><div><b>${lavg}</b><span>ממוצע הליגה במחזור</span></div><div><b>${D.glob.avg[i]}</b><span>ממוצע עולמי במחזור</span></div><div><b>${tc[1]}/${ms.length}</b><span>שמו קפטן על ${esc(tc[0])}</span></div><div><b>${above}/${g}</b><span>מחזורים שבהם הליגה מעל הממוצע העולמי</span></div></div></div></section>`;
+  h+=meFinal(g);
   h+=gwAwardsSection(g);
   h+=betsSection(g);
   h+=sec('jabs-h','העקיצות של המחזור',`<div class="jabs">${T('jabs').map(j=>`<div class="jab"><span class="who">${esc(j[1])}</span><h3>${esc(j[0])}</h3><p>${esc(j[2])}</p></div>`).join('')}</div>`);
@@ -1450,11 +1451,13 @@ function priceSection(){
   const atH=(()=>{const d=new Date(P.at+':00Z');return d.toLocaleString('he-IL',{weekday:'long',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'});})();
   let mv='';
   if(fresh){const L=Object.keys(P.S).map(id=>({id:+id,c:pcOf(+id)})).filter(x=>x.c).sort((a,b)=>a.c.when-b.c.when||b.c.d-a.c.d||Math.abs(b.c.pct)-Math.abs(a.c.pct));
-    mv=L.length?`<div class="pcl">${L.map(x=>{const own=leagueOwn(x.id),up=x.c.d>0,nw=(cost(x.id)+(up?0.1:-0.1)).toFixed(1);
-      return `<div class="pcr ${up?'up':'dn'}"><span class="pca">${up?'▲':'▼'}</span><div><b>${nmb(nmT(x.id))}</b> <span class="pcn"><bdi dir="ltr">${cost(x.id).toFixed(1)} → ${nw}</bdi></span><span class="pcs">${esc(`${x.c.sure&&x.c.when===0?'כמעט בטוח':'צפוי'} ${up?'לעלות':'לרדת'} ${PCW[x.c.when]}`)}</span><small>${esc(own.length===MG().length?'אצל כולם':`אצל ${andJ(own)}`)}</small></div><span class="pcp"><bdi dir="ltr">${x.c.pct>0?'+':''}${x.c.pct}%</bdi></span></div>`;}).join('')}</div>`:`<p class="note">אף שחקן בסגלים של הליגה לא צפוי לזוז ביומיים הקרובים.</p>`;
+    const row=x=>{const own=leagueOwn(x.id),up=x.c.d>0,nw=(cost(x.id)+(up?0.1:-0.1)).toFixed(1);
+      return `<div class="pcr ${up?'up':'dn'}"><span class="pca">${up?'▲':'▼'}</span><div><b>${nmb(nmT(x.id))}</b> <span class="pcn"><bdi dir="ltr">${cost(x.id).toFixed(1)} → ${nw}</bdi></span><span class="pcs">${esc(`${x.c.sure&&x.c.when===0?'כמעט בטוח':'צפוי'} ${up?'לעלות':'לרדת'} ${PCW[x.c.when]}`)}</span><small>${esc(own.length===MG().length?'אצל כולם':`אצל ${andJ(own)}`)}</small></div><span class="pcp"><bdi dir="ltr">${x.c.pct>0?'+':''}${x.c.pct}%</bdi></span></div>`;};
+    const now=L.filter(x=>x.c.when===0),later=L.filter(x=>x.c.when>0);
+    mv=L.length?`${now.length?`<div class="pcl">${now.map(row).join('')}</div>`:'<p class="note">אף שחקן בסגלים של הליגה לא צפוי לזוז הלילה.</p>'}${later.length?`<details class="fold inner"><summary><span class="ft">${esc(`בהמשך: עוד ${later.length} ${later.length===1?'שחקן':'שחקנים'} קרובים לשינוי`)}</span><span class="chev" aria-hidden="true"></span></summary><div class="pcl">${later.map(row).join('')}</div></details>`:''}`:`<p class="note">אף שחקן בסגלים של הליגה לא צפוי לזוז ביומיים הקרובים.</p>`;
     const hot=Object.entries(P.M).map(([id,m])=>({id:+id,m})).filter(x=>Math.abs(x.m[1])>=4);const ups=hot.filter(x=>x.m[1]>0).map(x=>nm(x.id)).filter(Boolean),dns=hot.filter(x=>x.m[1]<0).map(x=>nm(x.id)).filter(Boolean);
     if(ups.length||dns.length)mv+=`<p class="note" style="margin-top:10px">${esc(`מחוץ לליגה, צפויים הלילה: ${ups.length?`עולים: ${ups.join(', ')}.`:''}${ups.length&&dns.length?' ':''}${dns.length?`יורדים: ${dns.join(', ')}.`:''}`)}</p>`;}
-  else mv=`<p class="note">התחזית מ${esc(atH)} כבר לא עדכנית. כתבו "עדכן" כדי למשוך חדשה.</p>`;
+  else mv=`<p class="note">התחזית מ${esc(atH)} כבר לא עדכנית. היא תתעדכן לבד בבנייה הבאה של האתר.</p>`;
   const sq=new Set(Object.keys(P.S).map(Number)),H=P.H.filter(h=>sq.has(h[0]));
   const grp={};H.forEach(h=>{(grp[h[0]]=grp[h[0]]||[]).push(h);});
   const hist=Object.entries(grp).map(([id,hs])=>({id:+id,d:hs.reduce((s,h)=>s+(h[2]-h[1]),0),now:hs[0][2]})).filter(x=>x.d!==0).sort((a,b)=>b.d-a.d);
@@ -2508,6 +2511,19 @@ function meSection(g,M){const me=MG().find(m=>m.slug===meGet());
   return sec('pre-me',`שלך, ${esc(me.he)}`,`<p class="lede2">${esc(`מקום ${pos} בליגה, ${gap?`${gap} נקודות מהפסגה`:'בפסגה'}. הצפי שלך למחזור ${g}: ${xv.toFixed(1)} נקודות (מקום ${xr+1} מתוך ${M.xp.length} בליגה).`)}</p>
    <div class="mecs">${card('לבדוק לפני הדדליין',chk,inj.length?'warn':'ok')}${card('הקפטן שלך',cap)}${card('ההעברה שלך',mv)}${pr}${card("צ'יפים",`<p>${esc(ch==='אין'?'לא נשארו צ\'יפים בחצי הזה.':`נשארו: ${ch}.`)}</p>${ch!=='אין'?`<small>${esc(`עוד ${left} מחזורים עד שהם פגים.`)}</small>`:''}`)}</div>
    <p class="note"><a href="#coach-${me.slug}">לפלאנר שלך ←</a> · לא אתה? <button type="button" class="lnk" data-me="">להחליף</button></p>`);}
+/* closing page: your gameweek first (only when "מי אני" is set) */
+function meFinal(g){const me=MG().find(m=>m.slug===meGet());if(!me||g>D.current)return '';const M=md(me.id),d=M.d[g-1];if(!d)return '';
+  const ms=MG(),pts=M.pts[g-1],gr=1+ms.filter(m=>md(m.id).pts[g-1]>pts).length,avg=sum(ms.map(m=>md(m.id).pts[g-1]))/ms.length;
+  const t=(m,gg)=>gg>0?md(m.id).tot[gg-1]:0,pos=gg=>1+ms.filter(m=>t(m,gg)>t(me,gg)).length,p1=pos(g),p0=g>1?pos(g-1):p1,mv=p0-p1;
+  const card=(ttl,body,tone='')=>`<div class="mec ${tone}"><h3>${ttl}</h3>${body}</div>`,mult=d.chip==='3xc'?3:2;
+  const capB=d.cap&&d.cap[0]!=='?'?`<p><b>${nmb(d.cap[0])}</b>: ${d.cap[1]} × ${mult} = <b>${d.cap[1]*mult}</b> נק'${d.cap[2]?'':' (לא שיחק, עבר לסגן)'}</p>${M.cr[g-1]>0?`<small>${nmb(d.top[0])} היה מביא ${M.cr[g-1]} נק' יותר בתור קפטן.</small>`:'<small>הבחירה הכי טובה שהייתה לך.</small>'}`:'<p>אין נתון.</p>';
+  const top=d.top?`<p><b>${nmb(d.top[0])}</b> עם ${d.top[1]} נק'.</p>`:'';
+  const bench=M.bench[g-1]>0?`<p>${M.bench[g-1]} נק' נשארו על הספסל${d.bb?`, הכי הרבה ${nmb(d.bb[0])} (${d.bb[1]})`:''}.</p>`:'<p>הספסל לא הפסיד לך כלום.</p>';
+  const trs=d.tr||[],net=sum(trs.map(x=>x[1]-x[3]))-(M.hits[g-1]||0);
+  const trB=trs.length?`<ul>${trs.map(x=>`<li><b>${nmb(x[0])}</b> ${x[1]} במקום <b>${nmb(x[2])}</b> ${x[3]}</li>`).join('')}</ul><small>סך הכל ${xf(net)} נק'${M.hits[g-1]?`, כולל קנס של ${M.hits[g-1]}`:''}${d.chip==='wildcard'||d.chip==='freehit'?` (${CHIP[d.chip]})`:''}.</small>`:'<p>לא עשית העברה במחזור הזה.</p>';
+  return sec('fin-me',`המחזור שלך, ${esc(me.he)}`,`<p class="lede2">${esc(`${pts} נקודות, מקום ${gr} מתוך ${ms.length} במחזור (הממוצע בליגה ${avg.toFixed(1)}). בטבלה: מקום ${p1}${mv>0?`, עלית ${mv===1?'מקום':mv+' מקומות'}`:mv<0?`, ירדת ${mv===-1?'מקום':-mv+' מקומות'}`:', בלי שינוי'}.`)}</p>
+   <div class="mecs">${card('הקפטן',capB,M.cr[g-1]>0?'warn':'ok')}${card('השחקן הכי טוב שלך',top)}${card('הספסל',bench,M.bench[g-1]>=8?'warn':'')}${card('ההעברות',trB,trs.length?(net>=0?'ok':'warn'):'')}${d.chip&&d.chip!=='wildcard'&&d.chip!=='freehit'?card("צ'יפ",`<p>${esc(CHIP[d.chip])}.</p>`):''}</div>
+   <p class="note"><a href="#coach-${me.slug}/pro">הפרופיל שלך ←</a> · לא אתה? <button type="button" class="lnk" data-me="">להחליף</button></p>`);}
 /* standings at a glance (pre-deadline lead) */
 function miniTable(){const g=D.current,o=orderAt(g),t=m=>md(m.id).tot[g-1],top=t(o[0]),me=meGet();
   return `<div class="mst"><span>הטבלה אחרי מחזור ${g}</span><div>${o.map(m=>{const r=1+o.filter(x=>t(x)>t(m)).length,gap=t(m)-top;return `<a href="#coach-${m.slug}" class="${m.slug===me?'mine':''}"><i>${r}</i>${esc(m.he)} <small>${gap?`<bdi dir="ltr">−${Math.abs(gap)}</bdi>`:t(m)+" נק'"}</small></a>`;}).join('')}</div></div>`;}
