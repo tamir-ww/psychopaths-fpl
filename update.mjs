@@ -262,6 +262,12 @@ if (typeof process !== 'undefined' && process.argv && process.argv[1] && process
     if (!FORCE) { say('deploy', 'false'); process.exit(0); }
     out = applyCurated(JSON.parse(JSON.stringify(prev)), cur); delete out.market; // a text or design change still goes live on the last data
   }
+  // keep the pre-deadline page of the gameweek in progress: freeze the last pre-deadline data (planner, prices, model) as it was
+  if (out.live && prev) {
+    if (prev.next && prev.next.gw === out.live && !prev.live && prev.planner) out.preSnap = { gw: out.live, at: prev.builtAt || prev.updated, next: prev.next, planner: prev.planner, price: prev.price, pm: prev.pm, players: prev.players, calib: prev.calib };
+    else if (prev.preSnap && prev.preSnap.gw === out.live) out.preSnap = prev.preSnap;
+  }
+  if (!out.live) delete out.preSnap;
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(outDir + '/data.json', JSON.stringify(out));
   const changed = !prev || VOLATILE(prev) !== VOLATILE(out);

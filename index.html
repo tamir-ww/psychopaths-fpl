@@ -621,6 +621,8 @@ body.shot .shothd,.shothd{border-bottom:0;padding:0;margin:0 0 6px;font-size:12p
 #ph-preview.live .lvb{display:inline-block}
 body.lvnow .navgw{position:relative}body.lvnow .navgw::after{content:"";position:absolute;top:6px;inset-inline-end:calc(50% - 18px);width:9px;height:9px;border-radius:50%;background:#e90052;box-shadow:0 0 0 2px var(--bg);animation:lvp 1.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){body.lvnow .navgw::after{animation:none}}
+.snapn{margin:6px 0 2px;padding:7px 12px;border-radius:12px;background:light-dark(#fff6d6,#2a2200);font-size:13.5px;font-weight:600}.snapn a{font-weight:800;white-space:nowrap}
+body.snapv .cdn{display:none}
 </style>
 </head>
 <body class="shot">
@@ -665,6 +667,10 @@ const krs=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?Math.round(
 const kr=n=>n>=1e6?(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':n>=1e5?Math.round(n/1e3)+'K':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'K':String(n);
 const CHIP={wildcard:'וויילדקארד',freehit:'פרי הִיט',bboost:"בנץ' בוסט","3xc":'טריפל קפטן'};
 let D=null, S={gw:1,ph:'final'}, sel=null, drawRace=null;
+/* D0 = the data as loaded. On the pre-deadline page of a gameweek that already started, D is a view of the frozen pre-deadline data (D0.preSnap) */
+let D0=null,DV='live';
+function useView(v){if(!D0||v===DV)return;DV=v;document.body.classList.toggle('snapv',v==='snap');if(v==='snap'){const p=D0.preSnap,x=Object.assign({},D0,{planner:p.planner,price:p.price,pm:p.pm,players:p.players,calib:p.calib||D0.calib,next:p.next,live:null});delete x.__plr;D=x;}else D=D0;
+  [MVC,RTC,WI,XPC].forEach(o=>{for(const k in o)delete o[k];});TXMEM={};PGW=0;IMGP=null;}
 
 /* ---------- theme ---------- */
 const rt=document.documentElement;
@@ -828,7 +834,7 @@ function extraSections(g){
 /* ---------- views ---------- */
 const sec=(id,title,inner,cls='')=>`<section class="band ${cls}" ${cls?'':'style="padding-top:0"'}><div class="in"><h2 class="sec" id="${id}">${title}</h2>${inner}</div></section>`;
 /* ---------- summary first, the rest folded ---------- */
-const FOLDS=[['pv-caps',''],['pv-table',''],['moves',''],['pred',''],['pv-lu',''],['watch',''],['need',''],['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
+const FOLDS=[['pv-caps',''],['pv-table',''],['moves',''],['pred',''],['pv-lu',''],['need',''],['pre-xp',''],['pre-chips',''],['pre-fx',''],['pre-rate',''],['pre-st',''],['gwaw','.aw h3'],['check','.lede2, .cb h3'],['h2h','.riv p'],['form','.story h3'],['caps','.lede2'],['hof','.lede2'],['bets','.lede2'],['month','.mrow.top'],['regret','.story h3'],['acc','.lede2'],['hall','.tally div'],['awards-h','.aw h3']];
 const firstSentence=t=>{t=(t||'').replace(/\s+/g,' ').trim();const m=t.match(/^.{20,}?[.!?](\s|$)/);t=m?m[0].trim():t;return t.length>110?t.slice(0,108)+'…':t;};
 function foldify(TT='עוד מהמחזור',closed=false){
   const v=$('view'),made=[];
@@ -899,10 +905,10 @@ function renderPreview(g){
   h+=P.eo?pvSections(g):eoSection(g);
   if(P.eo&&D.planner)h+=pvPredSection(g);
   else if(P.prediction){const pr=P.prediction;h+=sec('pred','התחזית',`<div class="kings"><div class="k king"><div class="lbl">מלך המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.king))}</span></div></div><div class="k flop"><div class="lbl">תחתית המחזור לפי התחזית</div><div class="big"><span>${esc(he(pr.flop))}</span></div></div></div>${pr.why?`<p class="lede2" style="margin-top:12px">${esc(pr.why)}</p>`:''}<p class="note">בסיכום הסיום נבדוק אם צדקנו.</p>`);}
-  h+=sec('watch','למה לצפות',`<div class="jabs">${P.watch.slice(0,3).map(j=>`<div class="jab"><h3>${esc(j[0])}</h3><p>${esc(j[1])}</p></div>`).join('')}</div>`);
+  h+=sec('watch','מה לראות במחזור',`<div class="jabs">${P.watch.slice(0,4).map(j=>`<div class="jab"><h3>${esc(j[0])}</h3><p>${esc(j[1])}</p></div>`).join('')}</div>`);
   if(!P.eo)h+=sec('diffs','מה משותף לכולם ומה רק לאחד',`<div class="two"><div><h3 class="kar" style="font-size:20px;margin-bottom:10px">התבנית: פותחים אצל רוב הליגה</h3><div class="tpl">${tpl}</div></div><div><h3 class="kar" style="font-size:20px;margin-bottom:10px">הדיפרנשלים: פותחים אצל מאמן אחד בלבד</h3><div style="overflow-x:auto">${diffs}</div><p class="note">קושי המשחק לפי FPL: 2 קל, 5 קשה. "בעולם": אחוז המאמנים בעולם שמחזיקים בשחקן.</p></div></div>`);
   h+=P.eo?pvMoves(g):sec('moves','מה כל אחד עשה לפני הדדליין',`<div class="moves">${moves}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי דומים</h3><div class="moves">${pr('similar')}</div><h3 class="kar" style="font-size:20px;margin:22px 0 8px">הכי שונים</h3><div class="moves">${pr('different')}</div>`);
-  if(P.eo){const S2=secSplit(h),ORD=['pv-match','eo-bets','pv-dead','pv-xi','pv-caps','pv-table','moves','pred','pv-lu','watch'],idOf=x=>{const m=/<h2 class="sec" id="([^"]+)"/.exec(x);return m?m[1]:null;};const lead=S2.filter(x=>!idOf(x)),rest=S2.filter(x=>idOf(x));h=lead.join('')+ORD.map(id=>rest.filter(x=>idOf(x)===id).join('')).join('')+rest.filter(x=>!ORD.includes(idOf(x))).join('');}
+  if(P.eo){const S2=secSplit(h),ORD=['watch','pv-match','eo-bets','pv-dead','pv-xi','pv-caps','pv-table','moves','pred','pv-lu'],idOf=x=>{const m=/<h2 class="sec" id="([^"]+)"/.exec(x);return m?m[1]:null;};const lead=S2.filter(x=>!idOf(x)),rest=S2.filter(x=>idOf(x));h=lead.join('')+ORD.map(id=>rest.filter(x=>idOf(x)===id).join('')).join('')+rest.filter(x=>!ORD.includes(idOf(x))).join('');}
   if(hasLive(g))h=h.replace('<section class="band lead">',renderLive(g).replace(/id="st"/,'id="st2"')+'<section class="band lead">');
   $('view').innerHTML=h; drawRace=null;foldify('עוד מהמחזור',innerWidth<=700);
 }
@@ -1437,7 +1443,7 @@ function decisionSection(g,C,stories){const ms=MG(),i=g-1,M=decisionModel(g),top
    <p class="note">ההרכב המושלם: 11 השחקנים הכי טובים מתוך ה-15 באותו מחזור, במערך חוקי, עם הקפטן הנכון. "מהעברות": כמה נקודות השחקנים שנכנסו עשו יותר מאלה שיצאו, רק במחזורים שהם באמת היו אצלו, בלי וויילדקארד ופרי היט. המאזן לא סופר את הנקודות שהקפטן כן הביא, רק את מה שהיה אפשר להוציא יותר.</p>`);}
 
 /* ---------- before the deadline ---------- */
-const hasPre=g=>!!(D.next&&g===D.next.gw&&D.planner&&D.gw[g]&&D.gw[g].kick);
+const hasPre=g=>!!(D0&&D0.preSnap&&D0.preSnap.gw===g&&D0.gw[g]&&D0.gw[g].kick)||!!(D.next&&g===D.next.gw&&D.planner&&D.gw[g]&&D.gw[g].kick);
 const dlFmt=iso=>new Date(iso).toLocaleString('he-IL',{weekday:'long',hour:'2-digit',minute:'2-digit'});
 const koFmt=iso=>new Date(iso).toLocaleString('he-IL',{weekday:'short',hour:'2-digit',minute:'2-digit'});
 function preLeft(){const ms=new Date(D.next.deadline)-Date.now();if(ms<=0)return 'הדדליין עבר';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d?`עוד ${d===1?'יום':d+' ימים'} ו-${h} שעות`:h?`עוד ${h} שעות ו-${m} דקות`:`עוד ${m} דקות`;}
@@ -1489,7 +1495,8 @@ function preModel(g){const ms=MG(),pl={};
 function renderPre(g){const M=preModel(g),ms=MG(),dl=D.next.deadline,c0=M.caps[0],x0=M.xp[0],xl=M.xp[M.xp.length-1],ni=M.inj.length,url=location.href.split('#')[0];
   const head=`הדדליין ${dlFmt(dl)}`;
   const dek=`${preLeft()}. ${ni?`${ni} ${ni>1?'שחקנים בסגלים של הליגה בסימן שאלה':'שחקן בסגלים של הליגה בסימן שאלה'}${M.inj[0]?`, הבולט: ${M.inj[0].name} (${flagOf(M.inj[0]).pct}% לשחק, אצל ${M.inj[0].own.length})`:''}.`:'אין פצועים בסגלים של הליגה.'} הקפטן הכי חזק לפי התחזית: ${c0.name}. עם הסגלים של היום, ל${x0.m.he} התחזית הכי גבוהה ול${xl.m.he} הכי נמוכה.`;
-  let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">לפני הדדליין · מחזור ${g}</p><h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
+  const snapAt=DV==='snap'?new Date(D0.preSnap.at):null;
+  let h=`<section class="band lead"><div class="in"><p class="who" style="font-size:15px">לפני הדדליין · מחזור ${g}</p>${snapAt?`<p class="snapn">${esc(`ככה זה נראה לפני הדדליין. הנתונים נכונים ל-${isNaN(snapAt)?'':snapAt.toLocaleString('he-IL',{weekday:'long',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'})}.`)} <a href="#gw${g}-preview">למחזור עכשיו ←</a></p>`:''}<h1>${esc(head)}</h1><p class="dek">${esc(dek)}</p>
    <div class="cdn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><b id="cdn">${esc(preLeft())}</b></div>${miniTable()}
    ${shareRow('')}<p class="status" id="st" role="status"></p></div></section>`;
   h+=meSection(g,M);
@@ -1766,6 +1773,7 @@ function navSet(k){const tb=$('tabbar');let lc=meGet();if(!lc){try{lc=localStora
 function route(){
   $('ov').classList.remove('on');
   if(location.hash==='#me'){let lc=meGet();if(!lc){try{lc=localStorage.getItem('pp-coach');}catch(e){}}if(!MG().some(m=>m.slug===lc))lc=MG()[0].slug;location.replace('#coach-'+lc);return;}
+  {const mp=/^#gw(\d+)-pre$/.exec(location.hash);useView(mp&&D0&&D0.preSnap&&D0.preSnap.gw===+mp[1]?'snap':'live');}
   const hs=location.hash,navk=(hs.startsWith('#coach-')||hs==='#fixtures')?'coach':(hs==='#market'||hs==='#archive'||hs==='#season')?'season':'gw';navSet(navk);
   const other=hs==='#archive'||hs==='#season'||hs==='#market'||hs==='#fixtures'||hs.startsWith('#coach-');
   $('gwnav').hidden=other;$('phbar').hidden=other;$('ptitle').hidden=!other;
@@ -2048,8 +2056,9 @@ function posterOpeningFPL(g,ST){
   const BT=E.coach.filter(c=>c.up.length||c.dn.length),DEAD=E.dead;
   const hh=170+fkLines(Pv.headline,`900 50px ${HB}`,968,2).length*58+40,gap=28;
   /* same order as the page: captains in one band, the matches that decide, the differentials, who moves nothing, the league XI, then who did what */
+  const WT=(Pv.watch||[]).slice(0,4).map(w=>({t:w[0],L:fkLines(w[1],`600 21px ${HB}`,912,2)})),wH=WT.length?84+WT.reduce((a,w)=>a+44+w.L.length*30+14,0):0;
   const capH=118,mH=ML.length?96+ML.length*150:0,bH=BT.length?96+BT.length*64+10:0,dH=DEAD.length?150:0,pitchH=xi.length>=11?96+4*168+20:0,tH=96+TRm.length*58+12;
-  const H=Math.max(ST?1920:0,hh+gap-60+capH+gap+(mH?mH+gap:0)+(bH?bH+gap:0)+(dH?dH+gap:0)+(pitchH?pitchH+gap:0)+tH+gap+120);
+  const H=Math.max(ST?1920:0,hh+gap-60+capH+gap+(wH?wH+gap:0)+(mH?mH+gap:0)+(bH?bH+gap:0)+(dH?dH+gap:0)+(pitchH?pitchH+gap:0)+tH+gap+120);
   const k=fkCanvas(H),{t,fit,card,rr,grad,R0,L0,CW,x}=k;
   k.header(`מחזור ${g} · תוך כדי`,Pv.headline);let y=hh+gap-60;
   const pills=(items,yy,right,maxW,font)=>{let xx=right;items.forEach(([label,fill,col,dir])=>{const w=fkTw(label,font)+30;if(right-xx+w>maxW+1)return;rr(xx-w,yy,w,40,20,fill);t(label,xx-w/2,yy+28,font,col,'center',dir||'ltr');xx-=w+10;});};
@@ -2058,6 +2067,10 @@ function posterOpeningFPL(g,ST){
     t('הסרט',R0-28,y+46,`800 20px ${HB}`,CY);
     pills(E.caps.map(p=>[p.cap.length===1?`${p.name} · ${p.cap[0].he}`:`${p.name} ×${p.cap.length}`,p.cap.length===1?PK:'rgba(255,255,255,.14)',WH,p.cap.length===1?'rtl':'ltr']),y+62,R0-28,CW-56,`800 22px ${HB}`);
     y+=capH+gap;}
+  /* what to watch (the opening text) */
+  if(wH){card(L0,y,CW,wH,'n');t('מה לראות במחזור',R0-28,y+56,`900 32px ${HB}`,P);let yy=y+84;
+    WT.forEach((w,j)=>{if(j){x.fillStyle=LINE;x.fillRect(L0+24,yy-8,CW-48,2);}rr(R0-34,yy+14,8,24,4,GR);t(fit(w.t,`800 26px ${HB}`,CW-80),R0-48,yy+34,`800 26px ${HB}`,P);w.L.forEach((ln,q)=>t(ln,R0-28,yy+70+q*30,`600 21px ${HB}`,SOFT));yy+=44+w.L.length*30+14;});
+    y+=wH+gap;}
   /* the matches that decide */
   if(ML.length){card(L0,y,CW,mH,'b');t('המשחקים שיכריעו את המחזור',R0-28,y+56,`900 32px ${HB}`,P);t('איפה ההרכבים הכי שונים',L0+28,y+56,`600 18px ${HB}`,SOFT,'left');
     ML.forEach((M,j)=>{const yy=y+96+j*150;if(j){x.fillStyle=LINE;x.fillRect(L0+24,yy-10,CW-48,2);}
@@ -2207,7 +2220,7 @@ function posterCardFPL(g,id,ST){
 }
 
 /* ---------- mid-gameweek live view ---------- */
-const hasLive=g=>!!(D.gw[g]&&D.gw[g].live);
+const hasLive=g=>{const G=D.gw[g];if(!G||!G.live)return false;const k=G.kick||[];return !k.length||k.some(f=>Date.parse(f[2])<=Date.now());};
 function liveModel(g){
   const L=D.gw[g].live,ms=MG(),N=ms.length,at=new Date(L.at),kick=(D.gw[g].kick||[]);
   const ko={};kick.forEach(([h,a,t])=>{ko[h]=new Date(t);ko[a]=new Date(t);});
@@ -2606,7 +2619,7 @@ const footTxt=()=>{const v=D.builtAt||(D.planner&&D.planner.asOf)||D.updated,t=n
   $('foot').textContent=`ליגת Psychopaths · ${D.managers.length} מאמנים · הנתונים מ-FPL, מתעדכנים לבד · עודכן ${w}`;};
 const gwOpts=()=>{$('gwsel').innerHTML=Array.from({length:maxGw()},(_,k)=>`<option value="${k+1}">מחזור ${k+1}</option>`).join('');};
 let loadedAt=0;setInterval(()=>{if(D)navChrome();},60000);
-loadData().then(d=>{D=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();setTimeout(instBar,2500);}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
+loadData().then(d=>{D=d;D0=d;S.gw=D.current;loadedAt=Date.now();gwOpts();footTxt();meMenu();if(standalone())$('inst2').hidden=true;route();setTimeout(instBar,2500);}).catch(err=>{$('view').innerHTML='<section class="band"><div class="in"><p>לא הצלחתי לטעון את הנתונים. נסו לרענן.</p></div></section>';});
 /* back to the app after a while (a phone tab, the home-screen app): if there is newer data, reload (the hash keeps the page, drafts are in localStorage) */
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'||!D||Date.now()-loadedAt<5*6e4)return;loadedAt=Date.now();
   loadData().then(d=>{if(!d||d.builtAt===D.builtAt)return;const busy=$('ov').classList.contains('on')||document.body.classList.contains('sheet')||document.querySelector('.open,input:focus,textarea:focus');if(busy)return;location.reload();}).catch(()=>{});});
