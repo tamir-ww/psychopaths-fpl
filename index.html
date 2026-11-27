@@ -2537,7 +2537,7 @@ function installHelp(){if(bip){bip.prompt();bip.userChoice.finally(()=>{bip=null
 const helloSeen=()=>{try{return localStorage.getItem('pp-hello')==='1';}catch(e){return true;}};
 function helloHtml(){const me=meGet();
   return `<div class="hello" id="hello" role="region" aria-label="ברוכים הבאים"><button type="button" class="x" id="hellox" aria-label="סגירה">×</button><div class="hhd"><img src="assets/mark.png" alt="" width="51" height="56"><b>ברוכים הבאים לפסיכו פאנטזי</b></div>
-  <p>האתר של ליגת Psychopaths. הנתונים מתעדכנים לבד מ-FPL: כל חצי שעה בזמן משחקים ולפני הדדליין.</p>
+  <p>האתר של ליגת Psychopaths. הנתונים מתעדכנים לבד מ-FPL כמה פעמים ביום, ובזמן הדדליין והמשחקים לפי הצורך. בתחתית כל עמוד כתוב מתי עודכן.</p>
   <ul><li><b>מחזור</b>: לפני הדדליין, תוך כדי (עם לייב בזמן המשחקים) וסיכום. בכל עמוד יש תמונה מוכנה לווטסאפ.</li><li><b>פלאנר</b>: הסגל של כל מאמן, צפי נקודות, המלצות להעברות ולקפטן. מה שתנסו שם נשמר רק אצלכם.</li><li><b>עונה</b>: המרוץ, סיכויי אליפות, יריבויות והארכיון.</li></ul>
   <div class="hme"><span>מי אתה? (לא חובה, אפשר לשנות בתפריט ⋯)</span><div class="mepick">${MG().map(m=>`<button type="button" data-me="${m.slug}" aria-pressed="${m.slug===me}">${esc(m.he)}</button>`).join('')}</div></div>
   <div class="hact">${standalone()?'':'<button type="button" class="btn ghost inst">הוספה למסך הבית</button>'}<button type="button" class="btn" id="hellook">יאללה</button></div></div>`;}
