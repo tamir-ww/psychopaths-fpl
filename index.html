@@ -592,15 +592,31 @@ html{-webkit-tap-highlight-color:transparent}button,.walink,.tabbar a,.seg butto
 @media(max-width:700px){[role=tab]{font-size:14px;min-height:38px;padding:0 13px}.tabsec h2.sec{font-size:22px}}
 body.shot .shothd,.shothd{border-bottom:0;padding:0;margin:0 0 6px;font-size:12px}
 .tabsec>.in{padding-top:8px}
+.gwbtn,.hback{display:none}
+@media(max-width:700px){
+ #gwsel{display:none}.gwbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:800 16px Heebo,sans-serif;color:var(--ink);background:var(--card);border:0;border-radius:99px;padding:7px 16px;min-width:118px;cursor:pointer}
+ .gwbtn{background:var(--card) no-repeat left 12px center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23887' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");padding-inline:16px 32px}
+ .hback{display:inline-grid;place-items:center;width:38px;height:38px;border:0;background:transparent;color:var(--ink)}.hback svg{width:22px;height:22px}.hback[hidden]{display:none}.app.hasback .brand{display:none}
+}
+.gws{position:fixed;inset:0;z-index:80;pointer-events:none}.gws.on{pointer-events:auto}
+.gwsb{position:absolute;inset:0;background:rgba(22,0,26,.45);opacity:0;transition:opacity .2s}.gws.on .gwsb{opacity:1}
+.gwsp{position:absolute;inset-inline:0;bottom:0;max-height:75vh;background:var(--bg);border-radius:20px 20px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.2);transform:translateY(100%);transition:transform .22s ease-out;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+.gws.on .gwsp{transform:none}@media(min-width:701px){.gwsp{max-width:480px;margin:0 auto;inset-inline:0}}
+.gwsh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px}.gwsh b{font-size:18px}.gwsh .ib{font-size:22px;border:0;background:var(--card)}
+.gwsp ul{list-style:none;margin:0;padding:0 10px 14px;overflow:auto}
+.gwsp li button{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:right;border:0;background:transparent;color:var(--ink);padding:10px 12px;border-radius:12px;font:inherit;cursor:pointer}
+.gwsp li button b{font-size:16px}.gwsp li button[aria-current=true]{background:var(--card);box-shadow:inset -4px 0 0 #1faa59}
+.gwl{font-size:13px;color:var(--soft)}.gwl.live{color:#e90052;font-weight:800}
+@media (prefers-reduced-motion:reduce){.gwsb,.gwsp{transition:none}}
 </style>
 </head>
 <body class="shot">
 <header class="app band" id="apphd"><div class="in">
   <div class="hrow">
-    <a class="brand" href="#" aria-label="פסיכו פאנטזי, לדף הבית"><img class="blogo" src="assets/logo.jpg" alt="" width="36" height="36"><span class="btx"><b>פסיכו פאנטזי</b><small>PSYCHOPATHS FPL</small></span></a>
+    <button type="button" class="ib hback" id="hback" aria-label="חזרה" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="brand" href="#" aria-label="פסיכו פאנטזי, לדף הבית"><img class="blogo" src="assets/logo.jpg" alt="" width="36" height="36"><span class="btx"><b>פסיכו פאנטזי</b><small>PSYCHOPATHS FPL</small></span></a>
     <div class="gwnav" id="gwnav">
     <button class="ib" id="prev" type="button" aria-label="המחזור הקודם"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
-    <select id="gwsel" aria-label="בחירת מחזור"></select>
+    <select id="gwsel" aria-label="בחירת מחזור"></select><button type="button" class="gwbtn" id="gwbtn" aria-haspopup="dialog" aria-label="בחירת מחזור"></button>
     <button class="ib" id="next" type="button" aria-label="המחזור הבא"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
   </div>
     <span class="ptitle" id="ptitle" hidden></span>
@@ -645,7 +661,18 @@ const effTheme=()=>pref||(rt.dataset.theme==='dark'||rt.dataset.theme==='light'?
 const SHOT=true;
 function dekClamp(){if(innerWidth>700)return;document.querySelectorAll('#view section.lead .dek:not([data-cl])').forEach(d=>{d.dataset.cl='1';d.classList.add('clp');
   if(d.scrollHeight<=d.clientHeight+2){d.classList.remove('clp');return;}const b=document.createElement('button');b.type='button';b.className='lnk dekmore';b.textContent='עוד';b.onclick=()=>{d.classList.remove('clp');b.remove();};d.after(b);});}
-function jumpify(){meMark();dekClamp();setTimeout(imgPrep,0);helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
+function navChrome(){const gb=$('gwbtn');if(gb&&S.gw)gb.textContent='מחזור '+S.gw;const hb=$('hback');if(hb){const on=typeof STK!=='undefined'&&STK.length>1;hb.hidden=!on;document.querySelector('header.app').classList.toggle('hasback',on);}}
+/* the gameweek list: every gameweek with one line about it */
+function gwSheet(){if(!D)return;const ms=MG(),mx=maxGw(),he=id=>(ms.find(m=>m.id===id)||{}).he;
+  const line=g=>{if(D.live===g)return '<span class="gwl live">לייב עכשיו</span>';if(g>D.current){const dl=D.next&&D.next.gw===g?new Date(D.next.deadline):null;return `<span class="gwl">לפני הדדליין${dl?' · '+esc(dl.toLocaleString('he-IL',{weekday:'long',hour:'2-digit',minute:'2-digit'})):''}</span>`;}
+    const pts=ms.map(m=>({m,v:md(m.id).pts[g-1]})).sort((a,b)=>b.v-a.v),top=pts.filter(z=>z.v===pts[0].v),cc={};ms.forEach(m=>{const d=md(m.id).d[g-1];if(d&&d.cap)cc[d.cap[0]]=(cc[d.cap[0]]||0)+1;});const cap=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+    return `<span class="gwl">מלך: ${esc(top.map(z=>z.m.he).join(' ו'))} ${pts[0].v}${cap?` · <bdi>${esc(cap[0])}</bdi> ×${cap[1]}`:''}</span>`;};
+  const el=document.createElement('div');el.className='gws';el.innerHTML=`<div class="gwsb" data-gwx></div><div class="gwsp" role="dialog" aria-modal="true" aria-label="בחירת מחזור"><div class="gwsh"><b>בחירת מחזור</b><button type="button" class="ib" data-gwx aria-label="סגירה">×</button></div><ul>${Array.from({length:mx},(_,k)=>mx-k).map(g=>`<li><button type="button" data-gwgo="${g}" aria-current="${g===S.gw}"><b>מחזור ${g}</b>${line(g)}</button></li>`).join('')}</ul></div>`;
+  document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add('on'));const cur=el.querySelector('[aria-current=true]');if(cur)cur.scrollIntoView({block:'center'});
+  const close=()=>{el.classList.remove('on');setTimeout(()=>el.remove(),200);};
+  el.addEventListener('click',e=>{if(e.target.closest('[data-gwx]')){close();return;}const b=e.target.closest('[data-gwgo]');if(b){close();buzz(8);go(+b.dataset.gwgo,S.ph);}});
+  document.addEventListener('keydown',function k(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',k);}});}
+function jumpify(){meMark();navChrome();dekClamp();setTimeout(imgPrep,0);helloShow(helloForce);{const pb=$('ph-preview');if(pb)pb.classList.toggle('live',!!(D&&D.live));}const v=$('view');if(!v)return;const old=v.querySelector('.jump');if(old)old.remove();
   const secs=[...v.querySelectorAll(':scope>section.band')].filter(x=>!x.classList.contains('lead'));
   const items=secs.map(x=>{const h=x.querySelector('h2.sec');if(!h)return null;let t=h.textContent.trim().split(/[:,]/)[0].replace(/^ה(טבלה|מרוץ)/,'$&');if(t.length>22)t=t.slice(0,21)+'…';return {x,t};}).filter(Boolean);
   if(items.length<4)return;const lead=v.querySelector(':scope>section.band.lead');if(!lead)return;
@@ -1747,7 +1774,7 @@ function route(){
 const okPh=(g,ph)=>ph==='pre'?hasPre(g):ph==='preview'?hasPrev(g):g<=D.current;
 const go=(gw,ph)=>{if(!okPh(gw,ph))ph=['final','preview','pre'].find(p=>okPh(gw,p))||'final';const h=`#gw${gw}-${ph}`;if(location.hash===h)route();else location.hash=h;};
 $('prev').onclick=()=>go(S.gw-1,S.ph);$('next').onclick=()=>go(S.gw+1,S.ph);
-$('gwsel').onchange=e=>go(+e.target.value,S.ph);
+$('gwsel').onchange=e=>go(+e.target.value,S.ph);$('gwbtn').onclick=gwSheet;$('hback').onclick=()=>history.back();
 $('phbar').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(S.gw,b.dataset.ph);});
 /* new page: top. Back to the page you came from: where you were */
 const POS={},STK=[location.hash];
